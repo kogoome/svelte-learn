@@ -4,12 +4,9 @@ function getSvelteFilePaths(): Array<string> {
 function removeLayoutPathsAt(SvelteFilePaths: Array<string>): Array<string> {
 	return SvelteFilePaths.filter((path) => path.includes('.svelte') && !path.includes('__'));
 }
-
-interface navItem {
-	title: string;
-	link: string;
-}
-// 리팩터링 필요
+// 과도함 if 의 사용으로 리팩터링 필요하지만,
+// 확장 가능성이 크지 않고 아래 출력함수의 데이터만 필요하기 때문에
+// 추가 리팩터링은 보류한다.
 function getTitleLinkFor(SvelteFilePaths: Array<string>): Array<navItem> {
 	const result = SvelteFilePaths.map((path) => {
 		const cleanPath = path.slice(9).replace('.svelte', '');
@@ -45,6 +42,8 @@ function getTitleLinkFor(SvelteFilePaths: Array<string>): Array<navItem> {
 	return result;
 }
 
-const navItems: Array<navItem> = getTitleLinkFor(removeLayoutPathsAt(getSvelteFilePaths()));
-
-export default navItems;
+export interface navItem {
+	title: string;
+	link: string;
+}
+export const navItems: Array<navItem> = getTitleLinkFor(removeLayoutPathsAt(getSvelteFilePaths()));

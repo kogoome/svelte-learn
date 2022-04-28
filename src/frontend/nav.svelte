@@ -1,5 +1,6 @@
-<script>
-  export let navItems
+<script lang="ts">
+  import type { navItem } from "../frontend/navItems";
+  export let navItems : Array<navItem>
   import {page} from '$app/stores'
   $: currentLink = $page.url.pathname
 </script>

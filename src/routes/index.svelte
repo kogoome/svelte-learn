@@ -1,5 +1,5 @@
 <script>
-  import navItems from '../frontend/navItems';
+  import {navItems} from '../frontend/navItems';
 </script>
 
 <svelte:head>

@@ -1,7 +1,7 @@
 <script>
 	import '../app.css';
 	import Nav from '../frontend/nav.svelte'
-	import navItems from '../frontend/navItems';
+	import {navItems} from '../frontend/navItems';
 
 </script>
 
