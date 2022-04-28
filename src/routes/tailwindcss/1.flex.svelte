@@ -27,7 +27,7 @@
 <div class="flex gap-1 p-2 bg-slate-100">
   <div class="h-10 w-10 bg-blue-300"></div>
   <div class="h-10 w-10 bg-yellow-300"></div>
-  <div class="h-10 grow bg-red-300"></div>
+  <div class="h-10 grow bg-red-300">grow</div>
   <div class="h-10 w-10 bg-green-300"></div>
 </div>
 
@@ -73,8 +73,52 @@
   <div class="h-10 w-10 bg-green-300"></div>
 </div>
 
-5-7. 응용
-<div class="flex justify-between gap-1 p-2 bg-slate-100">
+6. flex-wrap 자동 줄바꿈
+<div class="flex flex-wrap gap-1 p-2 bg-slate-100 w-48">
+  <div class="h-10 w-10 bg-blue-300"></div>
+  <div class="h-10 w-10 bg-red-300"></div>
+  <div class="h-10 w-10 bg-green-300"></div>
+  <div class="h-10 w-10 bg-blue-300"></div>
+  <div class="h-10 w-10 bg-red-300"></div>
+  <div class="h-10 w-10 bg-green-300"></div>
+</div>
+
+7. items-option 폰트 줄맞춤 기준
+<div class="flex flex-wrap gap-5 p-2 bg-slate-100">
+  <div class="flex items-start gap-1">
+    items-start
+    <div class="text-sm bg-blue-300">스몰</div>
+    <div class="text-xl bg-red-300">엑스라지</div>
+    <div class="text-3xl bg-green-300">3엑스라지</div>
+  </div>
+  <div class="flex items-end gap-1">
+    items-end
+    <div class="text-sm bg-blue-300">스몰</div>
+    <div class="text-xl bg-red-300">엑스라지</div>
+    <div class="text-3xl bg-green-300">3엑스라지</div>
+  </div>
+  <div class="flex items-center gap-1">
+    items-center
+    <div class="text-sm bg-blue-300">스몰</div>
+    <div class="text-xl bg-red-300">엑스라지</div>
+    <div class="text-3xl bg-green-300">3엑스라지</div>
+  </div>
+  <div class="flex items-baseline gap-1">
+    items-baseline
+    <div class="text-sm bg-blue-300">스몰</div>
+    <div class="text-xl bg-red-300">엑스라지</div>
+    <div class="text-3xl bg-green-300">3엑스라지</div>
+  </div>
+  <div class="flex items-stretch gap-1">
+    items-stretch
+    <div class="text-sm bg-blue-300">스몰</div>
+    <div class="text-xl bg-red-300">엑스라지</div>
+    <div class="text-3xl bg-green-300">3엑스라지</div>
+  </div>
+</div>
+
+0. 응용
+<div class="flex flex-wrap justify-between gap-1 p-2 bg-slate-100">
   <div class="flex gap-1 bg-slate-200">
     <div class="h-10 w-10 bg-blue-300"></div>
     <div class="h-10 w-10 bg-red-300"></div>
@@ -84,7 +128,7 @@
     <div class="h-10 w-10 bg-green-300"></div>
     <div class="h-10 w-10 bg-green-300"></div>
   </div>
-  <div class="flex gap-1">
+  <div class="grow flex justify-center gap-1 w-fit bg-slate-400">
     <div class="h-10 w-10 bg-blue-300"></div>
     <div class="h-10 w-10 bg-red-300"></div>
   </div>
