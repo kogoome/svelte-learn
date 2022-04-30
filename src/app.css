@@ -7,17 +7,44 @@ h1 {
   font-size: 2.5rem;
   font-weight: 500;
   line-height: 1.2;
-  margin-bottom: 1.5rem;
+  margin-top: 1.1rem;
 }
 h2 {
   font-size: 2rem;
   font-weight: 500;
   line-height: 1.2;
-  margin-bottom: 1.5rem;
+  margin-top: 1.1rem;
 }
 h3 {
   font-size: 1.75rem;
   font-weight: 500;
   line-height: 1.2;
-  margin-bottom: 1.5rem;
+  margin-top: 1.1rem;
+}
+
+.contentRoot{ 
+  height: auto; 
+  /* width:1664px; */
+  overflow-y: scroll; 
+  transition: 1s; 
+}
+/* 스크롤바 */
+::-webkit-scrollbar {
+  /* background-color: hsl(var(--b1));  */
+  /* width: 20px; 
+  height: 20px; */
+  width:4px;
+  height:4px;
+} 
+::-webkit-scrollbar-thumb { 
+  background-color: hsl(var(--s)/4); 
+  opacity: 0.4;
+  /* box-shadow: inset 10px 0 0 5px hsl(var(--b1)); */
+  border-radius: 100px;
+  cursor: row-resize;
+}
+.modalbg { 
+  background-color: rgba(0, 0, 0, .4); 
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
 }
