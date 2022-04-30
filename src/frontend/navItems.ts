@@ -1,17 +1,31 @@
-export interface navItem {
+interface navItem {
+	title: string;
+	category: string;
+	link: string;
+}
+interface item {
 	title: string;
 	link: string;
+}
+interface categoryItems {
+	[category: string]: item[];
+}
+interface navItems {
+	categories: string[];
+	categoryItems: categoryItems;
 }
 
 class NavMenu {
 	static #instance: NavMenu;
-	navItems: navItem[] = [];
+	#navItems = this.#getCategoryItems(
+		this.#getTitleLinkFor(this.#removeLayoutPathsAt(this.#getSvelteFilePaths()))
+	);
+
 	constructor() {
 		if (NavMenu.#instance) {
 			return NavMenu.#instance;
 		}
 		NavMenu.#instance = this;
-		this.navItems = this.#getTitleLinkFor(this.#removeLayoutPathsAt(this.#getSvelteFilePaths()));
 	}
 
 	#getSvelteFilePaths(): string[] {
@@ -20,19 +34,20 @@ class NavMenu {
 	#removeLayoutPathsAt(SvelteFilePaths: string[]): string[] {
 		return SvelteFilePaths.filter((path) => path.includes('.svelte') && !path.includes('__'));
 	}
-	// 과도함 if 의 사용으로 리팩터링 필요하지만,
-	// 확장 가능성이 크지 않고 아래 출력함수의 데이터만 필요하기 때문에
-	// 추가 리팩터링은 보류
+
 	#getTitleLinkFor(SvelteFilePaths: string[]): navItem[] {
 		const result = SvelteFilePaths.map((path) => {
 			const cleanPath = path.slice(9).replace('.svelte', '');
+			// 확장 가능성 없어서 추가 리팩터링 보류
 			let title = '';
+			let category = '';
 			if (cleanPath.includes('/index')) {
 				title = cleanPath.slice(1);
 				// .replace("/index", "") // 각 폴더 index타이틀 제거
 				// .replace("index", "main") // 메인 index타이틀 변경
+				category = 'main';
 			} else {
-				title = cleanPath.slice(1);
+				[category, title] = cleanPath.slice(1).split('/');
 			}
 			let link = '';
 			if (cleanPath.includes('/index')) {
@@ -44,19 +59,25 @@ class NavMenu {
 			} else {
 				link = cleanPath.replace('index', '');
 			}
-			return { title, link };
-		});
-		result.sort((a, b) => {
-			if (a.title < b.title) {
-				return -1;
-			}
-			// if (a.title > b.title) {
-			//   return 1
-			// }
-			return 0;
+			return { title, category, link };
 		});
 		return result;
 	}
+
+	#getCategoryItems(navItems: navItem[]): navItems {
+		const categoryItems: categoryItems = {};
+		navItems.forEach((item) => {
+			const { title, link } = item;
+			if (!(item.category in categoryItems)) categoryItems[item.category] = [];
+			categoryItems[item.category].push({ title, link });
+		});
+		const categories = Object.keys(categoryItems);
+		return { categories, categoryItems };
+	}
+
+	get navItems(): navItems {
+		return this.#navItems;
+	}
 }
 
-export const navItems = new NavMenu().navItems;
+export const { categories, categoryItems } = new NavMenu().navItems;
