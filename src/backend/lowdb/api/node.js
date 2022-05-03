@@ -1,5 +1,5 @@
 import { LowConnetor } from '../model/connector.ts'
-
+import { v4 as uuidv4 } from 'uuid';
 export default class NodeService {
   name
   nodeLow
@@ -12,7 +12,7 @@ export default class NodeService {
     const db = new LowConnetor(this.name)
     this.nodeLow = await db.connect()
     // this.nodeJson = this.nodeLow.data.node
-    console.log("Lowdb connect success")
+    console.log("Lowdb-node connect success")
   }
 
   // 언어검색기
@@ -36,7 +36,12 @@ export default class NodeService {
   }
   // 노드 쓰기
   setAllNode(nodeJson) {
-    this.nodeLow.data.node = nodeJson
+    const result = nodeJson.map(node => {
+      if (!node._id) node._id = uuidv4()
+      return node
+    }
+    )
+    this.nodeLow.data.node = result
     this.nodeLow.write()
     return "success"
   }

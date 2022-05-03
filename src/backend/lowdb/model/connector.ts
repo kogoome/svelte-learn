@@ -13,7 +13,7 @@ export class LowConnetor {
 	}
 
 	async connect() {
-		const filePath = join(dirname(fileURLToPath(import.meta.url)), `./db/${this.name}` + '.json');
+		const filePath = join(dirname(fileURLToPath(import.meta.url)), `./db/${this.name}.json`);
 		const jsonDB = await new Low(new JSONFile(filePath));
 		await jsonDB.read();
 		return jsonDB;

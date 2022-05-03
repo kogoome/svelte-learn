@@ -1,18 +1,21 @@
 import serviceList from "../../backend/lowdb/api/0.index.js"
-const { NodeService } = serviceList
+const { NodeService, EdgeService } = serviceList
 
 // read
 export const get = async () => {
 
-  const db = new NodeService("node")
-  if (!db.nodeLow) {
-    await db.connect()
-  }
-  const nodeJson = await db.getAllNode()
+  const nodeDB = new NodeService("node")
+  const edgeDB = new EdgeService("edge")
+  if (!nodeDB.nodeLow) await nodeDB.connect()
+  if (!edgeDB.edgeLow) await edgeDB.connect()
+
+  const nodeArray = await nodeDB.getAllNode()
+  const edgeJson = await edgeDB.getAllEdge()
   return {
     status: 200,
     body: {
-      nodeJson
+      nodeArray,
+      edgeJson
     }
   }
 }
