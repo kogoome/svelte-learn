@@ -1,7 +1,6 @@
 <script>
-  $: search="main, other1, other2"
-  let check = false
-  console.log(check)
+  $: search = "main, other1, other2"
+  $: check = false
 </script>
 
 <div class="currentRoot">
@@ -10,7 +9,7 @@
 
   <div class="invisible modalbg w-screen h-screen overflow-hidden
   fixed z-10 left-0 top-0 flex flex-row justify-center
-  peer-checked:visible" >
+  peer-checked:visible" on:click|self={()=>check=false} >
     <div class="flex flex-col justify-center" on:click|self={()=>check=false} >
       <div class="bg-slate-100 w-full h-fit rounded-btn p-5 ">
         <input type="text" class="btn btn-ghost w-full" bind:value={search}>

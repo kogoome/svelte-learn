@@ -1,6 +1,7 @@
 {
 	"name": "svelte-learn",
 	"version": "0.0.1",
+	"type": "module",
 	"scripts": {
 		"dev": "svelte-kit dev",
 		"build": "svelte-kit build",
@@ -34,11 +35,12 @@
 		"tslib": "^2.3.1",
 		"typescript": "~4.6.2"
 	},
-	"type": "module",
 	"dependencies": {
+		"@emotion/is-prop-valid": "^1.1.2",
 		"daisyui": "^2.14.3",
 		"lowdb": "^3.0.0",
 		"svelte-motion": "^0.11.2",
+		"ts-node": "^10.7.0",
 		"uuid": "^8.3.2"
 	}
 }

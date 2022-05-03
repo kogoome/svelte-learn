@@ -3,21 +3,41 @@
     {
       "name": [
         "사과",
-        ""
+        "apple"
       ],
       "description": [
-        "맛잇는 사과2",
-        ""
+        "맛있는 사과",
+        "macbook air"
       ]
     },
     {
       "name": [
-        "",
+        "포도",
+        "grape"
+      ],
+      "description": [
+        "맛있는 포도",
+        "big grape"
+      ]
+    },
+    {
+      "name": [
+        "나무",
         "tree"
       ],
       "description": [
-        "",
+        "나무는 나무입니다.",
         "grape tree"
+      ]
+    },
+    {
+      "name": [
+        "수학",
+        "math"
+      ],
+      "description": [
+        "숫자의 학문",
+        "the science of number"
       ]
     }
   ]
