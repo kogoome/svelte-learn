@@ -19,8 +19,27 @@
   let states = {"english":false, "description":false, "nodeVisible":false, "edgeVisible":false}
   $: langIndex = !states.english? 0 : 1 //#each 에서 사용
   let username = "kogoome"
+  let cloneEdgeJson =((_edgeJson) => {
+    const cloneEdgeJson = JSON.parse(JSON.stringify(_edgeJson))
+    for (let edge in cloneEdgeJson) {
+      cloneEdgeJson[edge] = cloneEdgeJson[edge].map(node => {
+        const includes = node.includes.map(includeId=>{
+          return includeId? findNodeById(includeId): null
+        })
+        node = findNodeById(node._id)
+        node["includes"] = includes
+        return node
+      })
+    }
+    return cloneEdgeJson
+  })(edgeJson)
 
-  const setAllNodes = async () => {
+
+  
+  function findNodeById(_id) {
+    return nodeArray.find(node=>node._id===_id)
+  }
+  async function setAllNodes() {
     nodeArray = nodeArray.filter(node => node.name.indexOf("")<0)
     const {msg} = await fetch('/api/lowdb', {
       method: 'POST', 
@@ -29,7 +48,7 @@
     .catch(err => console.log(err));
     console.log(msg)
   }
-  const addNode = async () => {
+  async function addNode() {
     const voidObj =  {"name": ["한글노드이름","nodename"], "description": ["한글노드설명", "description"] }
     nodeArray.unshift(voidObj)
     descrive("on")
@@ -37,13 +56,13 @@
     langIndex ++
     langIndex --
   }
-  const deleteNode = (e) => {
+  function deleteNode(e) {
     const nodeName = e.target.getAttribute("data-index");
     nodeArray = nodeArray.filter(node => node.name[langIndex]!=nodeName);
     langIndex ++;
     langIndex --;
   }
-  const editToggle = async (option) => {
+  async function editToggle(option) {
     // 중복코드 잘 보임  리팩토링 필요
     const edit = document.getElementById('edit')
     if (edit!==null) {
@@ -68,7 +87,7 @@
       console.log("button[#edit] is not found")
     }      
   }
-  const descrive = async (option) => {
+  async function descrive(option) {
     const desc = document.getElementById('desc')
     if (desc!==null) {
       if (option!=="on") option = desc.innerText==="DESCRIPTION-OFF"? "on" : "off"
@@ -89,33 +108,8 @@
       console.log("button[#desc] is not found")
     }
   }
-  const findNodeById = (_id) => {
-    return nodeArray.find(node=>node._id===_id)
-  }
-  const edgeJsonAddNodeArray = (_edgeJson) => {
-    const cloneEdgeJson = JSON.parse(JSON.stringify(_edgeJson))
-    // console.log("0", cloneEdgeJson)
-    for (let edge in cloneEdgeJson) {
-      // console.log("1 객체 순환 엣지 다루기 시작", ...cloneEdgeJson[edge])
-      cloneEdgeJson[edge] = cloneEdgeJson[edge].map(node => { // 카테고리 배열들에서 객체 뽑아내서
-        // console.log("2. 엣지 속 객체 순환")
-        const includes = node.includes.map(includeId=>{
-          // console.log("3. includes 객체반환")
-          return includeId?
-            findNodeById(includeId):null
-        })
-        // console.log("5. includes :", includes)
-        node = findNodeById(node._id)
-        node["includes"] = includes
-        // console.log("6. 변경된 node 확인 :",node)
-        return node
-        // 리턴해야하나? 수정했는데 해야할거같은데
-      })
-    }
-    // console.log("7", cloneEdgeJson)
-    return cloneEdgeJson
-  }
-  let cloneEdgeJson = edgeJsonAddNodeArray(edgeJson)
+
+
 </script>
 
 <!-- 상단 옵션 : 언어옵션 글로벌사용으로 전환시켜야함 -->
