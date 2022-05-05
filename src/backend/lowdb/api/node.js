@@ -11,8 +11,9 @@ export default class NodeService {
   async connect() {
     const db = new LowConnetor(this.name)
     this.nodeLow = await db.connect()
+    let time = (new Date()).getSeconds()
     // this.nodeJson = this.nodeLow.data.node
-    console.log("Lowdb-node connect success")
+    console.log(time + "Lowdb-node connect success")
   }
 
   // 언어검색기

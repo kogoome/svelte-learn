@@ -71,24 +71,23 @@
   const descrive = async (option) => {
     const desc = document.getElementById('desc')
     if (desc!==null) {
+      if (option!=="on") option = desc.innerText==="DESCRIPTION-OFF"? "on" : "off"
+      console.log(option)
       switch(option) {
         case "on":
           states.description = true
-          desc.innerHTML = `describe-on`
+          desc.innerHTML = `DESCRIPTION-ON`
           desc.classList.add('btn-warning')
           break;
         case "off":
           states.description = false
-          desc.innerHTML = `describe-off`
+          desc.innerHTML = `DESCRIPTION-OFF`
           desc.classList.remove('btn-warning')
           break;
-        default:
-         states.description = !states.description
-          desc.innerHTML = states.description ? `describe-off` : `describe-on`
-          desc.classList.toggle('btn-warning')
       }
+    } else {
+      console.log("button[#desc] is not found")
     }
-
   }
   const findNodeById = (_id) => {
     return nodeArray.find(node=>node._id===_id)
@@ -158,7 +157,10 @@
         {/if}
       </div>
       {/if}
-      <button class="btn btn-xs btn-ghost ml-auto text-slate-400" data-index={node.name[langIndex]} on:click={deleteNode}>삭제</button>
+      <div class="ml-auto flex justify-end">
+        <button class="btn btn-xs btn-ghost text-slate-400" data-index={node._id}>엣지로 등록</button>
+        <button class="btn btn-xs btn-ghost text-slate-400" data-index={node.name[langIndex]} on:click={deleteNode}>삭제</button>
+      </div>
     </div>
   {/each}
 </div>

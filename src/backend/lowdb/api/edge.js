@@ -12,7 +12,9 @@ export default class EdgeService {
     const db = new LowConnetor(this.name)
     this.edgeLow = await db.connect()
     // this.nodeJson = this.nodeLow.data.node
-    console.log("Lowdb-edge connect success")
+    let time = (new Date()).getSeconds()
+
+    console.log(time + "Lowdb-edge connect success")
   }
 
   // 언어검색기
