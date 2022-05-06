@@ -1,5 +1,5 @@
 <script>
-  import {fly, fade, slide} from 'svelte/transition'
+  import {fly, fade, slide, blur,scale,draw,crossfade} from 'svelte/transition'
   $: visible=false
 	function typewriter(node, { speed = 1 }) {
 		const valid = (
@@ -24,8 +24,12 @@
 	}
 </script>
 
+<label>
+	<input type="checkbox" bind:checked={visible}>
+	visible checkbox
+</label>
 
-<button on:click={()=>visible=!visible} class="btn"> visible</button>
+<button on:click={()=>visible=!visible} class="btn"> visible button</button>
 {#if visible}
   <div in:typewriter out:slide > this is typing transition </div>
   <ul in:slide out:slide>
@@ -37,5 +41,5 @@
   <div in:fly={{y:100, duration:2000}} out:slide>
     레이아웃
   </div>
+	<p transition:slide>Fades in and out</p>
 {/if}
-

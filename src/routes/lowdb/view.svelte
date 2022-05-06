@@ -35,7 +35,7 @@
   })(edgeJson)
 
 
-  
+
   function findNodeById(_id) {
     return nodeArray.find(node=>node._id===_id)
   }
