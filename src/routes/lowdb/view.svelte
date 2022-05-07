@@ -4,7 +4,6 @@
     .then(res => res.json())
     .catch(err => console.log(err));
 
-
     return {
       props:{nodeArray, edgeJson}
     }
