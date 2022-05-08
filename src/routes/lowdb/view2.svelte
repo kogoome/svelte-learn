@@ -1,9 +1,11 @@
 <script lang="ts">
+  // 타입
   type node = { [key: string]: {name:string[], type:string}, }
   type edge = { [key: string]: {name:string[]}, }
   type nodeInfo = { id : string, krName : string, type : "node"|"void" }
   type edgeInfo = { id : string, krName : string, type : "unary"|"binary"|"polynomial" }
   type db = { node:node, edge:edge }
+
   // 디비 대신 사용
   const db:db = { node:{}, edge:{} }
   const {node, edge} = db
@@ -13,15 +15,18 @@
   const memo : edgeInfo = { id: "memo", krName: "메모", type: "unary" }
   let voidInfo : nodeInfo|edgeInfo = { id: "void", krName: "비어있음", type: "void" }
   let langIndex = 0
+
   // 메서드
   function addNode(nodeInfo:nodeInfo|edgeInfo):void {
     const { id, krName, type } = nodeInfo
     if (id) node[id] = { name: [krName], type }
   }
   addNode(mean);addNode(categories);addNode(math);addNode(memo)
+
   // node 객체 배열로 변경
   const nodeArray = Object.keys(node).map(id => { return {id, ...node[id]} })
   const edgeArray = Object.keys(edge).map(id => { return {id, ...edge[id]} })
+  
   // 검색 추천어 
   let autoCompleteArr = []
   function search(e:Event) {
