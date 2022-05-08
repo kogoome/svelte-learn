@@ -1,69 +1,112 @@
 <script lang="ts">
   type node = { [key: string]: {name:string[], type:string}, }
   type edge = { [key: string]: {name:string[]}, }
-  interface nodeInfo {
-    id : string,
-    krName : string,
-    type : "node"
-  }
-  interface edgeInfo {
-    id : string,
-    krName : string,
-    type : "unary"|"binary"|"polynomial"
-  }
-  type set = { node:node, edge:edge }
-
-
-  const set:set = {
-    node:{},
-    edge:{}
-  }
-  const {node, edge} = set
-
+  type nodeInfo = { id : string, krName : string, type : "node"|"void" }
+  type edgeInfo = { id : string, krName : string, type : "unary"|"binary"|"polynomial" }
+  type db = { node:node, edge:edge }
+  // 디비 대신 사용
+  const db:db = { node:{}, edge:{} }
+  const {node, edge} = db
+  const mean : edgeInfo = { id: "meaning", krName: "의미", type: "unary" }
+  const categories : edgeInfo = { id: "categories", krName: "카테고리들", type: "polynomial" }
+  const math : nodeInfo = { id: "math", krName: "수학", type: "node" }
+  const memo : edgeInfo = { id: "memo", krName: "메모", type: "unary" }
+  let voidInfo : nodeInfo|edgeInfo = { id: "void", krName: "비어있음", type: "void" }
+  let langIndex = 0
+  // 메서드
   function addNode(nodeInfo:nodeInfo|edgeInfo):void {
-    const {id, krName, type }= nodeInfo
-    if (id) {
-      node[id] = {
-        name: [krName],
-        type
-      }
+    const { id, krName, type } = nodeInfo
+    if (id) node[id] = { name: [krName], type }
+  }
+  addNode(mean);addNode(categories);addNode(math);addNode(memo)
+  // node 객체 배열로 변경
+  const nodeArray = Object.keys(node).map(id => { return {id, ...node[id]} })
+  const edgeArray = Object.keys(edge).map(id => { return {id, ...edge[id]} })
+  // 검색 추천어 
+  let autoCompleteArr = []
+  function search(e:Event) {
+    let str = (<Element>e.target).value
+    autoCompleteArr = nodeArray.filter(node => node.id.includes(str))
+  }
+
+  function addVoidInfo():void { 
+    const regex = /[a-zA-Z]/
+    if(voidInfo.id!=="void" && regex.test(voidInfo.id)) {
+      voidInfo.id = voidInfo.id.toLowerCase()
+      addNode(voidInfo)
+      voidInfo = { id: "void", krName: "비어있음", type: "void" }
     }
   }
 
+  const nodeTypes = [ "node", "unary", "binary", "polynomial" ]
 
-
-  const mean : edgeInfo = {
-    id: "meaning",
-    krName: "의미",
-    type: "unary"
+  function modify(e:Event):void {
+    const button = (<Element>e.target)
+    let contenteditable = ""
+    switch (button.innerHTML) {
+      case "e-on" :
+        button.innerHTML = "e-off"
+        contenteditable = "false"
+        break
+      case "e-off" :
+        button.innerHTML = "e-on"
+        contenteditable = "true"
+        break
+    } 
+    const parent = (<Element>e.target).parentElement
+    const childs = parent?.querySelectorAll("div")
+    if (!childs) { return }
+    childs?.forEach(child => {
+      child.setAttribute('contenteditable', contenteditable)
+    })
+    parent?.classList.toggle("bg-gray-100")
+    button.classList.toggle("btn-ghost")
+    button.classList.toggle("btn-warning")
+    childs[1].focus()
   }
-
-  const categories : edgeInfo = {
-    id: "categories",
-    krName: "카테고리",
-    type: "polynomial"
+  function deleteNode(e:Event):void {
+    const id = (<Element>e.target).getAttribute("data-id")
+    if (!id) { return }
+    delete node[id]
+    langIndex ++
+    langIndex --
   }
-
-  const math : nodeInfo = {
-    id: "math",
-    krName: "수학",
-    type: "node"
-  }
-
-  addNode(mean)
-  addNode(categories)
-  addNode(math)
-  
-
-  console.log(set)
-
 </script>
 
-
 <h2>all nodes</h2>
-{#each Object.keys(node) as item}
-<div>
-  {node[item].name}({item})  
-</div>
+<!-- 노드 넣기 더미 -->
+<div class="flex bg-slate-100" id="nodelist">
+  <div contenteditable="true" bind:textContent={voidInfo.krName}/>
+  (<div contenteditable="true" bind:textContent={voidInfo.id}/>)
+  <div class="flex ml-auto gap-2">
+    type :
+    {#each nodeTypes as type, idx}
+      <label class="flex items-center">
+        <input type="radio" bind:group={voidInfo.type} name="type" class="radio radio-sm peer hidden" value={type}/>
+        <div class="btn btn-xs btn-ghost peer-checked:btn-warning ">
+          {type}
+        </div>
+      </label>
+    {/each}
+  </div>
+  <button class="btn btn-xs btn-primary ml-auto" on:click={addVoidInfo}>add</button>
   
+</div>
+
+{#each Object.keys(node) as item (item)}
+  <div class="flex">
+    <div contenteditable="false" bind:textContent={node[item].name[langIndex]}/>
+    (<div contenteditable="false" bind:textContent={item}/>)
+    <!-- <div class="grow"></div> -->
+    <button class="ml-auto btn btn-xs btn-ghost text-slate-400" on:click={modify}>e-off</button>
+    <button class="btn btn-xs btn-ghost text-slate-400" data-id={item} on:click={deleteNode}>d</button>
+  </div>
+{/each}
+
+<h2>all edges</h2>
+<!-- 엣지 넣기 더미 -->
+
+<input type="text" on:keyup={search}>
+{#each autoCompleteArr as node}
+<div>{JSON.stringify(node)}</div>
 {/each}

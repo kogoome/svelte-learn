@@ -38,7 +38,9 @@
 	"dependencies": {
 		"@emotion/is-prop-valid": "^1.1.2",
 		"daisyui": "^2.14.3",
+		"lodash-es": "^4.17.21",
 		"lowdb": "^3.0.0",
+		"minisearch": "^4.0.3",
 		"svelte-motion": "^0.11.2",
 		"theme-change": "^2.0.2",
 		"ts-node": "^10.7.0",
