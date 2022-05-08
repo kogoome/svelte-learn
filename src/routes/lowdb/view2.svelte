@@ -3,14 +3,14 @@
   type node = { [key: string]: {name:string[], type:string}, }
   type edge = { [key: string]: {name:string[]}, }
   type nodeInfo = { id : string, krName : string, type : "node"|"void" }
-  type edgeInfo = { id : string, krName : string, type : "unary"|"binary"|"polynomial" }
+  type edgeInfo = { id : string, krName : string, type : "unary"|"binary"|"polynary" }
   type db = { node:node, edge:edge }
 
   // 디비 대신 사용
   const db:db = { node:{}, edge:{} }
   const {node, edge} = db
   const mean : edgeInfo = { id: "meaning", krName: "의미", type: "unary" }
-  const categories : edgeInfo = { id: "categories", krName: "카테고리들", type: "polynomial" }
+  const categories : edgeInfo = { id: "categories", krName: "카테고리들", type: "polynary" }
   const math : nodeInfo = { id: "math", krName: "수학", type: "node" }
   const memo : edgeInfo = { id: "memo", krName: "메모", type: "unary" }
   let voidInfo : nodeInfo|edgeInfo = { id: "void", krName: "비어있음", type: "void" }
@@ -26,7 +26,7 @@
   // node 객체 배열로 변경
   const nodeArray = Object.keys(node).map(id => { return {id, ...node[id]} })
   const edgeArray = Object.keys(edge).map(id => { return {id, ...edge[id]} })
-  
+
   // 검색 추천어 
   let autoCompleteArr = []
   function search(e:Event) {
@@ -43,7 +43,7 @@
     }
   }
 
-  const nodeTypes = [ "node", "unary", "binary", "polynomial" ]
+  const nodeTypes = [ "node", "unary", "binary", "polynary" ]
 
   function modify(e:Event):void {
     const button = (<Element>e.target)
@@ -67,7 +67,7 @@
     parent?.classList.toggle("bg-gray-100")
     button.classList.toggle("btn-ghost")
     button.classList.toggle("btn-warning")
-    childs[1].focus()
+    childs[0].focus()
   }
   function deleteNode(e:Event):void {
     const id = (<Element>e.target).getAttribute("data-id")
@@ -102,16 +102,29 @@
   <div class="flex">
     <div contenteditable="false" bind:textContent={node[item].name[langIndex]}/>
     (<div contenteditable="false" bind:textContent={item}/>)
-    <!-- <div class="grow"></div> -->
+    <!-- 객체의 키값이 변경 안되는 문제가있음. 그냥둘지 해결할지? -->
+    <!-- 만약 키값을 변경하고자 한다면, 엘리먼트 치환하고 텍스트 받아서 새로 객체 추가하고, 기존객체는 지우는 방식으로 사용 -->
+
+
     <button class="ml-auto btn btn-xs btn-ghost text-slate-400" on:click={modify}>e-off</button>
     <button class="btn btn-xs btn-ghost text-slate-400" data-id={item} on:click={deleteNode}>d</button>
   </div>
 {/each}
 
-<h2>all edges</h2>
-<!-- 엣지 넣기 더미 -->
 
-<input type="text" on:keyup={search}>
-{#each autoCompleteArr as node}
-<div>{JSON.stringify(node)}</div>
-{/each}
+
+<h2>all edges</h2>
+
+<div class="flex flex-col">
+  <input type="text" class="peer input input-xs w-screen" on:keyup={search} placeholder="nodename"/>
+  <div class="relative invisible peer-focus:visible">
+    <div class="absolute left-0 bg-blue-300 w-full">
+      {#each autoCompleteArr as node}
+        <div class=" hover:btn-primary">
+          {JSON.stringify(node)}
+        </div>
+      {/each}
+    </div>
+  </div>
+</div>
+아랫공간에있는 데이터
