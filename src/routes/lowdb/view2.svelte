@@ -5,7 +5,6 @@
   type nodeInfo = { id : string, krName : string, type : "node"|"void" }
   type edgeInfo = { id : string, krName : string, type : "unary"|"binary"|"polynary" }
   type db = { node:node, edge:edge }
-
   // 디비 대신 사용
   const db:db = { node:{}, edge:{} }
   const {node, edge} = db
@@ -24,18 +23,19 @@
   addNode(mean);addNode(categories);addNode(math);addNode(memo)
 
   // node 객체 배열로 변경
+  type nodeArray = { name: string[]; type: string; id: string; }[]
   const nodeArray = Object.keys(node).map(id => { return {id, ...node[id]} })
   const edgeArray = Object.keys(edge).map(id => { return {id, ...edge[id]} })
 
   // 검색 추천어 
-  let autoCompleteArr = []
+  let autoCompleteNodeArr:nodeArray = []
   function search(e:Event) {
-    let str = (<Element>e.target).value
-    autoCompleteArr = nodeArray.filter(node => node.id.includes(str))
+    let str = (<HTMLInputElement>e.target).value
+    autoCompleteNodeArr = nodeArray.filter(node => node.id.includes(str))
   }
 
   function addVoidInfo():void { 
-    const regex = /[a-zA-Z]/
+    const regex = /^[a-zA-Z]$/
     if(voidInfo.id!=="void" && regex.test(voidInfo.id)) {
       voidInfo.id = voidInfo.id.toLowerCase()
       addNode(voidInfo)
@@ -95,7 +95,6 @@
     {/each}
   </div>
   <button class="btn btn-xs btn-primary ml-auto" on:click={addVoidInfo}>add</button>
-  
 </div>
 
 {#each Object.keys(node) as item (item)}
@@ -104,8 +103,6 @@
     (<div contenteditable="false" bind:textContent={item}/>)
     <!-- 객체의 키값이 변경 안되는 문제가있음. 그냥둘지 해결할지? -->
     <!-- 만약 키값을 변경하고자 한다면, 엘리먼트 치환하고 텍스트 받아서 새로 객체 추가하고, 기존객체는 지우는 방식으로 사용 -->
-
-
     <button class="ml-auto btn btn-xs btn-ghost text-slate-400" on:click={modify}>e-off</button>
     <button class="btn btn-xs btn-ghost text-slate-400" data-id={item} on:click={deleteNode}>d</button>
   </div>
@@ -116,10 +113,10 @@
 <h2>all edges</h2>
 
 <div class="flex flex-col">
-  <input type="text" class="peer input input-xs w-screen" on:keyup={search} placeholder="nodename"/>
+  <input type="text" class="peer input input-xs w-screen bg-slate-50" on:keyup={search} placeholder="search nodename"/>
   <div class="relative invisible peer-focus:visible">
     <div class="absolute left-0 bg-blue-300 w-full">
-      {#each autoCompleteArr as node}
+      {#each autoCompleteNodeArr as node}
         <div class=" hover:btn-primary">
           {JSON.stringify(node)}
         </div>
