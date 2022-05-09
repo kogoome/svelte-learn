@@ -1,14 +1,14 @@
 <script>
   // 사용자 입력 정규표현식
-  const customRedgex = {id:"customName", regexStr:"input your regex"};
+  const customRedgex = {id:"customName", regexStr:"input your regex", msg:""};
   function addRegex() {
-    
     if (!regArray.find(regex => regex.id === customRedgex.id)) {
       const regex = new RegExp(customRedgex.regexStr)
       regArray.push({id:customRedgex.id, regex:regex})
+      customRedgex.msg = "추가되었습니다."
       regArray[0].id += " "
     } else {
-      alert("같은 이름이 존재합니다.")
+      customRedgex.msg = "같은 이름이 존재합니다."
     }
     customRedgex.id = "customName"
     customRedgex.regexStr = "input your regex"
@@ -17,7 +17,7 @@
   const regArray = [
     { id: "en", regex: /[a-zA-Z]/ },
     { id: "ko", regex: /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/ },
-    { id: "number", regex: /^[0-9]$/ },
+    { id: "number", regex: /[0-9]/ },
     { id: "email", regex: /^[a-zA-Z0-9]{4,12}@[a-zA-Z0-9]{4,12}.[a-zA-Z0-9]{2,12}$/ },
     { id: "date", regex: /^[0-9]{4,12}-[0-9]{2,2}-[0-9]{2,2}$/ },
     { id: "time", regex: /^[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}$/ },
@@ -41,7 +41,8 @@
 <div class="flex bg-blue-100 gap-2">
   <div contenteditable="true" bind:textContent={customRedgex.id}/> : 
   <div contenteditable="true" bind:textContent={customRedgex.regexStr}/>
-  <button class="btn btn-xs btn-ghost ml-auto text-slate-400" on:click={addRegex}>
+  <div class="m-auto text-blue-400">{customRedgex.msg}</div>
+  <button class="btn btn-xs btn-ghost text-slate-400" on:click={addRegex}>
     add regex
   </button>
 </div>
