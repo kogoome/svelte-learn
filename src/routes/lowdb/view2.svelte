@@ -15,36 +15,32 @@
   let voidInfo : nodeInfo|edgeInfo = { id: "void", krName: "비어있음", type: "void" }
   let langIndex = 0
 
-  // 메서드
+  // 노드 추가 작동 함수
   function addNode(nodeInfo:nodeInfo|edgeInfo):void {
     const { id, krName, type } = nodeInfo
     if (id) node[id] = { name: [krName], type }
   }
   addNode(mean);addNode(categories);addNode(math);addNode(memo)
 
-  // node 객체 배열로 변경
+  // 노드 검색 추천어 배열 작성
   type nodeArray = { name: string[]; type: string; id: string; }[]
-  const nodeArray = Object.keys(node).map(id => { return {id, ...node[id]} })
-  const edgeArray = Object.keys(edge).map(id => { return {id, ...edge[id]} })
-
-  // 검색 추천어 
-  let autoCompleteNodeArr:nodeArray = []
-  function search(e:Event) {
-    let str = (<HTMLInputElement>e.target).value
-    autoCompleteNodeArr = nodeArray.filter(node => node.id.includes(str))
+  let nodeArray = updateSearchNodeArray(node)
+  function updateSearchNodeArray(node:node) {
+    return Object.keys(node).map(id => { return {id, ...node[id]} }) 
   }
 
-  function addVoidInfo():void { 
-    const regex = /^[a-zA-Z]$/
-    if(voidInfo.id!=="void" && regex.test(voidInfo.id)) {
+  // 유져 노드 작성
+  const nodeTypes = [ "node", "unary", "binary", "polynary" ]
+  function addUserNode():void { 
+    const regex = /^[a-z]/
+    if(voidInfo.id!=="void" && regex.test(voidInfo.id) && voidInfo.type!=="void") {
       voidInfo.id = voidInfo.id.toLowerCase()
       addNode(voidInfo)
+      nodeArray = updateSearchNodeArray(node)
       voidInfo = { id: "void", krName: "비어있음", type: "void" }
     }
   }
-
-  const nodeTypes = [ "node", "unary", "binary", "polynary" ]
-
+  // 노드 한글이름 수정
   function modify(e:Event):void {
     const button = (<Element>e.target)
     let contenteditable = ""
@@ -76,6 +72,28 @@
     langIndex ++
     langIndex --
   }
+
+  // 노드 추가 되면 업데이트 안됨. 노드 추가시 업데이트 하는걸로 변경
+  const edgeArray = Object.keys(edge).map(id => { return {id, ...edge[id]} })
+  let autoCompleteNodeArr:nodeArray = []
+  function search(e:Event) {
+    let userInputText = (<HTMLInputElement>e.target).value
+    let lang = langSelector(userInputText)
+    switch (lang) {
+      case "kr":
+        autoCompleteNodeArr = nodeArray.filter(node => node.name.includes(userInputText))
+        break
+      default:
+        autoCompleteNodeArr = nodeArray.filter(node => node.id.includes(userInputText))
+        break
+    }
+    function langSelector(userInputText : string) {
+      const krRegex = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g
+      const enRegex = /[a-z]/g
+      const lang = userInputText.match(krRegex) ? "kr" : "en"
+      return lang
+    }
+  }
 </script>
 
 <h2>all nodes</h2>
@@ -88,13 +106,13 @@
     {#each nodeTypes as type, idx}
       <label class="flex items-center">
         <input type="radio" bind:group={voidInfo.type} name="type" class="radio radio-sm peer hidden" value={type}/>
-        <div class="btn btn-xs btn-ghost peer-checked:btn-warning ">
+        <div class="btn btn-xs btn-ghost peer-checked:btn-warning">
           {type}
         </div>
       </label>
     {/each}
   </div>
-  <button class="btn btn-xs btn-primary ml-auto" on:click={addVoidInfo}>add</button>
+  <button class="btn btn-xs btn-primary ml-auto" on:click={addUserNode}>add</button>
 </div>
 
 {#each Object.keys(node) as item (item)}
