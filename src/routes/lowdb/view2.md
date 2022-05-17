@@ -15,7 +15,7 @@ db = {
   node:{
     tree:{
       name:["나무", "árbol", "arbre"] 
-      // 한국어(0), 스페인어(1), 프랑스어(2).. 이후 언어추가는 어렵지 않음.
+      // 한국어(0), 스페인어(1), 프랑스어(2).. 언어추가는 어렵지 않음.
       type:"node"
       // 타입은 노드(기본값)
       // 엣지타입은 unary binary polynary로 일항연산자 이항연산자 다항연산자에서 착안하여 가져옴.
@@ -25,7 +25,53 @@ db = {
     }
   },
   edge:{
-    _Category:{ // 내장엣지, 트리구조형 자료정리를 위한 엣지. 무한뎁스사용.
+    _Subset:[ 
+      // 내장엣지 카테고리 기반 엣지,
+      // binary 타입의 기본형태
+      // 키값이 존재하지 않기 때문에 배열로 구성
+      // 뎁스1
+      // 이론기반은 집합론의 relation. aRb 이면 (a,b) is in R
+      // R은 AxB의 섭셋
+      // 관계는 node x node , 즉 [node1, node2]의 총체를 Relation이라고함.
+      // 포함관계의 경우 reflexive antisymmetric transitive 한 속성을 가짐.
+      // [A, A] A집합은 A집합에 포함, 즉, 포함관계는 항상 자기 자신과의 관계가 항상 존재.
+      // [A, B] is in Subset, if A != B then [B, A] is not in Subset => antisymmetric : 방향성의 존재.
+      // [A, B] is in Subset, and [B, C] is in Subset then [A, C] is in Subset => transitive
+      // 이런 속성에 의해 포함관계집합은 partially ordered set 부분 순서 집합 poset이 됨.
+      // poset에서 부분순서를 만족하는 원소들은 범주(카테고리)라고 볼 수 있음.
+      // 이 transitive한 속성 때문에 엣지들의 추론이 가능.
+      
+      
+      [plant, tree],
+      [tree, fruit], // fruit은 tree의 subset이다. 
+      [realNumber, rationalNumber],
+      [realNumber, irrationalNumber],
+      [rationalNumber, integer],
+      [integer, naturalNumber], // 연쇄 릴레이션에 의해 _Path 엣지를 생성가능 - 3단논법, 추론
+
+      // 배열의 추가는 [node1, node2] 형식으로 추가되는데, node1을 엣지 배열에서 검색 
+      // [otherNode, node1] 이 있는 마지막 인덱스 뒤쪽에 추가한다. 그럼 배열은
+      [someNode, node1],
+      [otherNode, node1],
+      [node1, node2],
+      ... 
+      // 으로 구성, 추론하기 쉬운 형태의 순서로 나타난다. 위 구성에도 문제가 있는데
+      // [someNode, node1],
+      // [otherNode, node1], 에 의해 someNode otherNode 의 관계가 나타나있지 않다.
+      // 만약 [someNode, otherNode] 이거나 [otherNode, someNode]라면 빠진관계를 입력하여
+      // 한 컨셉의 트리구조를 더 견고하게 만들 수 있지만,
+      // 두 경우에 모두 성립하지 않아 someNode 와 otherNode 가 서로 포함관계가 아니라면
+      // 상이한 두 상위구조의 공통요소로 node1이 존재하게 된다.
+      // 즉 트리구조 이상의 정보를 포함하고, 다수의 상한이 존재하게 된다.
+      // 이 상한을 추론해서 카테고리 영역을 채워넣을 수 있을 듯하다.
+    ],
+    
+    _PathOfSubset:[
+      [realNumber, rationalNumber, integer, naturalNumber],
+      [realNumber, irrationalNumber],
+
+    ],
+    _Category:{ // 내장엣지, 트리구조형 자료정리를 위한 엣지. 무한뎁스. _Subset에 의해 추론생성
       plant:{
         tree:{
           fruit:{
@@ -48,50 +94,6 @@ db = {
         middleSchool:{ },
       }
     },
-    _Subset:[ 
-      // 내장엣지 카테고리 기반 엣지, 
-      // binary 타입의 기본형태
-      // 키값이 존재하지 않기 때문에 배열로 구성
-      // 뎁스1
-      // 이론기반은 집합론의 relation. aRb 이면 (a,b) is in R
-      // R은 AxB의 섭셋
-      // 관계는 node x node , 즉 [node1, node2]의 총체를 Relation이라고함.
-      // 포함관계의 경우 reflexive antisymmetric transitive 한 속성을 가짐.
-      // [A, A] A집합은 A집합에 포함, 즉, 포함관계는 항상 자기 자신과의 관계가 항상 존재.
-      // [A, B] is in Subset, if A != B then [B, A] is not in Subset => antisymmetric : 방향성의 존재.
-      // [A, B] is in Subset, and [B, C] is in Subset then [A, C] is in Subset => transitive
-      // 이런 속성에 의해 포함관계집합은 partially ordered set 부분 순서 집합 poset이 됨.
-      // poset에서 부분순서를 만족하는 원소들은 범주(카테고리)라고 볼 수 있음.
-      // 이 transitive한 속성 때문에 엣지들의 추론이 가능.
-
-      [tree, fruit], // fruit은 tree의 subset이다. 
-      [realNumber, raionalNumber]
-      [realNumber, irrational number]
-      [raionalNumber, integer],
-      [integer, naturalNumber], // 연쇄 릴레이션에 의해 _Path 엣지를 생성가능 - 3단논법, 추론
-
-      // 배열의 추가는 [node1, node2] 형식으로 추가되는데, node1을 엣지 배열에서 검색 
-      // [othernode, node1] 이 있는 마지막 인덱스 뒤쪽에 추가한다. 그럼 배열은
-      [somenode, node1],
-      [othernode, node1],
-      [node1, node2],
-      ... 
-      // 으로 구성, 추론하기 쉬운 형태의 순서로 나타난다. 위 구성에도 문제가 있는데
-      // [somenode, node1],
-      // [othernode, node1], 에 의해 somenode와 othernode의 관계가 나타나있지 않다.
-      // 만약 [somenode, othernode] 이거나 [othernode, somenode]라면 빠진관계를 입력하여
-      // 한 컨셉의 트리구조를 더 견고하게 만들 수 있지만,
-      // 두 경우에 모두 성립하지 않아 somenode와 othernode가 서로 포함관계가 아니라면
-      // 상이한 두 상위구조의 공통요소로 node1이 존재하게 된다.
-      // 즉 트리구조 이상의 정보를 포함하고, 다수의 상한supremum이 존재하게 된다.
-      // 이 상한을 추론해서 카테고리 영역을 채워넣을 수 있을 듯하다.
-
-      // 엣지 원소로부터 
-    ],
-    _PathOfSubset:[
-      [realNumber, raionalNumber, integer, naturalNumber] 
-    ],
-
     _Include:{ // 내장엣지 카테고리 기반 엣지, 뎁스1
       [naturalNumber, 1]  // 1은 자연수에 포함된다.
     }
