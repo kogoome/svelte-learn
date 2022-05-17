@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 
 // }
 
-export class LowConnetor {
+export default class LowConnector {
 	name: string;
 	constructor(name: string) {
 		this.name = name;
