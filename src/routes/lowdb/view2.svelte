@@ -81,7 +81,7 @@
     let lang = langSelector(userInputText)
     switch (lang) {
       case "kr":
-        autoCompleteNodeArr = nodeArray.filter(node => node.name.includes(userInputText))
+        autoCompleteNodeArr = nodeArray.filter(node => node.name[0].includes(userInputText))
         break
       default:
         autoCompleteNodeArr = nodeArray.filter(node => node.id.includes(userInputText))
