@@ -1,83 +1,83 @@
 interface navItem {
-	title: string;
-	category: string;
-	link: string;
+	title: string
+	category: string
+	link: string
 }
 interface item {
-	title: string;
-	link: string;
+	title: string
+	link: string
 }
 interface categoryItems {
-	[category: string]: item[];
+	[category: string]: item[]
 }
 interface navItems {
-	categories: string[];
-	categoryItems: categoryItems;
+	categories: string[]
+	categoryItems: categoryItems
 }
 
 class NavMenu {
-	static #instance: NavMenu;
+	static #instance: NavMenu
 	#navItems = this.#getCategoryItems(
-		this.#getTitleLinkFor(this.#removeLayoutPathsAt(this.#getSvelteFilePaths()))
-	);
+		this.#getNavItem(this.#removeLayoutPathsAt(this.#getSvelteFilePaths()))
+	)
 
 	constructor() {
-		if (NavMenu.#instance) {
-			return NavMenu.#instance;
-		}
-		NavMenu.#instance = this;
+		// 싱글톤
+		if (NavMenu.#instance) return NavMenu.#instance
+		NavMenu.#instance = this
 	}
 
 	#getSvelteFilePaths(): string[] {
-		return Object.keys(import.meta.glob('../routes/**'));
+		return Object.keys(import.meta.glob('../routes/**'))
 	}
+
 	#removeLayoutPathsAt(SvelteFilePaths: string[]): string[] {
-		return SvelteFilePaths.filter((path) => path.includes('.svelte') && !path.includes('__'));
+		return SvelteFilePaths.filter((path) => path.includes('.svelte') && !path.includes('__'))
 	}
 
-	#getTitleLinkFor(SvelteFilePaths: string[]): navItem[] {
-		const result = SvelteFilePaths.map((path) => {
-			const cleanPath = path.slice(9).replace('.svelte', '');
-			// 확장 가능성 없어서 추가 리팩터링 보류
-			let title = '';
-			let category = '';
-			if (cleanPath.includes('/index')) {
-				title = cleanPath.slice(1);
-				// .replace("/index", "") // 각 폴더 index타이틀 제거
-				// .replace("index", "main") // 메인 index타이틀 변경
-				category = 'main';
-			} else {
-				[category, title] = cleanPath.slice(1).split('/');
+	#getNavItem(SvelteFilePathsWithoutLayout: string[]): navItem[] {
+		return SvelteFilePathsWithoutLayout.map((path) => {
+			// 클린패스는 스벨트킷 라우터에서 폴더명과 파일명을 제외한 경로를 제거한 경우를 말함.
+			const cleanPath = path.slice(9).replace('.svelte', '')
+
+			const category = getCategory()
+			const title = getTitle()
+			const link = getLink()
+			function getCategory() {
+				return cleanPath === '/index' ? 'main' : cleanPath.slice(1).split('/')[0]
 			}
-			let link = '';
-			if (cleanPath.includes('/index')) {
-				if (cleanPath === '/index') {
-					link = '/';
-				} else {
-					link = cleanPath.replace('/index', '');
-				}
-			} else {
-				link = cleanPath.replace('index', '');
+			function getTitle() {
+				return cleanPath === '/index' ? cleanPath.slice(1) : cleanPath.slice(1).split('/')[1]
 			}
-			return { title, category, link };
-		});
-		return result;
+			// ! 폴더 안 index.svelte 파일은 생성하지 않는다.
+			function getLink() {
+				return cleanPath === '/index' ? '/' : cleanPath
+			}
+			return { title, category, link }
+		})
 	}
 
-	#getCategoryItems(navItems: navItem[]): navItems {
-		const categoryItems: categoryItems = {};
-		navItems.forEach((item) => {
-			const { title, link } = item;
-			if (!(item.category in categoryItems)) categoryItems[item.category] = [];
-			categoryItems[item.category].push({ title, link });
-		});
-		const categories = Object.keys(categoryItems);
-		return { categories, categoryItems };
+	#getCategoryItems(navItem: navItem[]): navItems {
+		const categoryItems = getCategoryItems(navItem)
+		const categories = getCategories(categoryItems)
+
+		function getCategoryItems(navItem: navItem[]) {
+			const categoryItems: categoryItems = {}
+			navItem.forEach((item) => {
+				const { title, link } = item
+				if (!(item.category in categoryItems)) categoryItems[item.category] = []
+				categoryItems[item.category].push({ title, link })
+			})
+			return categoryItems
+		}
+		function getCategories(items: categoryItems) {
+			return Object.keys(items)
+		}
+		return { categories, categoryItems }
 	}
 
 	get navItems(): navItems {
-		return this.#navItems;
+		return this.#navItems
 	}
 }
-
-export const { categories, categoryItems } = new NavMenu().navItems;
+export const { categories, categoryItems } = new NavMenu().navItems
