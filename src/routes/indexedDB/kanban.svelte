@@ -1,18 +1,23 @@
 <script lang="ts">
   import { kanbanDb as k, bgColor } from './kanbanTempData'
-  import { clockSwitch } from './kanbanMethod'
+  import { clockSwitch, clockView } from './kanbanMethod'
   import { onMount } from 'svelte'
   import { cloneDeep } from 'lodash-es'
   const kanban = cloneDeep(k)
   onMount(() => {
     const todo = document.querySelector('#Todo')
     todo?.firstChild?.addEventListener('click', clockSwitch)
-    console.log('asd')
   })
+
+  function printKanban() {
+    console.log('test')
+    console.log(kanban)
+  }
 </script>
 
 <!-- <button on:click={read}>read</button> -->
 <h1 class="text-center">TODO 업무 진행용 칸반 제작</h1>
+한글을 입력하면 실시간 반영되야 되는데
 
 <div class="flex rounded-xl bg-slate-200 p-3 m-3 justify-between gap-3">
   <div class="basis-1/3 w-full bg-slate-300 rounded-md pb-8" style="display:none;" id="clock">
@@ -23,16 +28,21 @@
       <ul
         class="h-0 -translate-y-3 opacity-0 overflow-hidden peer-checked:h-fit peer-checked:opacity-100 peer-checked:transform-none transition-all duration-300"
       >
-        {#each kanban.Todo[0].list as task}
-          <div>{task}</div>
-        {/each}
+        {#if clockView}
+          {#each kanban.Todo[0].list as task (clockView)}
+            {clockView}
+
+            <div>{task}</div>
+          {/each}
+        {/if}
       </ul>
     </div>
     <div>
       <div class="bg-red-500 w-full rounded-2xl px-3">clock</div>
     </div>
   </div>
-  {#each Object.keys(kanban) as key}
+  {#each Object.keys(kanban) as key (clockView)}
+    {clockView}
     <!-- key : todo, process, complete -->
     <div class="basis-1/3 w-full {bgColor[key]} rounded-md pb-8" id={key}>
       <!-- 클릭이벤트는 마운트 할때 커스텀입력하게 만들것 -->
@@ -48,7 +58,7 @@
             {#if item.title == 'todayWork'}
               <div class="flex">
                 <input class="bg-white w-full rounded-md" />
-                <button class="btn btn-ghost btn-sm">add</button>
+                <button class="btn btn-ghost btn-sm" on:click={printKanban}>add</button>
               </div>
             {/if}
             {#each item.list as task}

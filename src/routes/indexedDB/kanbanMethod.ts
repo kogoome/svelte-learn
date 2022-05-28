@@ -1,3 +1,4 @@
+export let clockView = false
 export function clockSwitch(e: Event) {
   const todo = document.getElementById('Todo') as HTMLDivElement
   const button = <HTMLDivElement>e.target
@@ -5,10 +6,11 @@ export function clockSwitch(e: Event) {
   if (button.innerHTML === 'Todo') {
     todo.style.display = 'none'
     clock.style.display = 'block'
-    console.log(clock)
+    clockView = true
   } else {
     clock.style.display = 'none'
     todo.style.display = 'block'
+    clockView = false
   }
   // TODO 1. 디비에 저장 2. 클락워크에서 디비 읽어오기 3. 클락워크 문서에 삽입
   // function todayWorkCopy() {
