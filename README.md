@@ -1,7 +1,7 @@
 # create-sveltekit
 
 ```
-npm init svelte@next
+npm init svelte
 all feature confirm
 ```
 # add tailwindcss

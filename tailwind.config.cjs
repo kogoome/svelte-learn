@@ -1,15 +1,11 @@
 const config = {
-	content: [
-		'./src/**/*.{html,js,svelte,ts}',
-	],
+	content: ['./src/**/*.{html,js,svelte,ts}'],
 
 	theme: {
 		extend: {}
 	},
 
-	plugins: [
-		require("daisyui")
-	],
+	plugins: [require('daisyui')],
 	daisyui: {
 		styled: true,
 		themes: require('./daisyui.theme.cjs').themes,
@@ -17,9 +13,9 @@ const config = {
 		utils: true,
 		logs: true,
 		rtl: false,
-		prefix: "",
-		darkTheme: "dark",
-	},
+		prefix: '',
+		darkTheme: 'dark'
+	}
 };
 
 module.exports = config;
