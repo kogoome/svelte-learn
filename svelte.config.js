@@ -16,6 +16,7 @@ const config = {
     vite: {
       resolve: {
         alias: {
+          $lib: path.resolve('./src/lib'),
           $lowApi: path.resolve('./src/backend/lowdb/api'),
           $routes: path.resolve('./src/routes'),
           $backend: path.resolve('./src/backend'),
