@@ -1,4 +1,4 @@
-import { kanban, stepIndex, stepDataIndex } from '$lib/IDB/kanbanScheme'
+import { kanban, stepIndex, stepDataIndex } from './kanbanScheme'
 
 let version = 1
 let db: IDBDatabase
@@ -15,6 +15,7 @@ export function DBOpen() {
     // db.createObjectStore(, { keyPath: 'index' })
     console.log('db opened!')
   }
+  console.log(db)
 }
 
 export async function getAll(kan: kanban) {

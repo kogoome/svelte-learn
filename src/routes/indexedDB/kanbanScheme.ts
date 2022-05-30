@@ -46,10 +46,9 @@ export const txtColor: color = {
 }
 // 이 데이터 처리는 레이아웃 페이지에서 할것.
 
-
 export const IDBschema = [
   // 인덱스는 각 스텝 타이틀의 순서를 나타냄
-  { id: 0, step: 'Todo', title: 'todayWork',  index: 4 },
+  { id: 0, step: 'Todo', title: 'todayWork', index: 4 },
   { id: 1, step: 'Todo', title: '0.0.z', index: 3 },
   { id: 2, step: 'Todo', title: '0.y.0', index: 2 },
   { id: 3, step: 'Todo', title: 'x.0.0', index: 1 },
