@@ -5,10 +5,10 @@
     stepIndex,
     stepDataIndex,
     bgColor,
-    txtColor
+    txtColor,
   } from './kanbanScheme'
   import _ from 'lodash-es'
-  import { DBOpen, getAll, modifyAll, versionUp } from './IDBMethod'
+  import { DBOpen, getAll, modifyAll, versionUp, db } from './IDBMethod'
 
   DBOpen()
   let kanban = _.cloneDeep(k)

@@ -1,9 +1,9 @@
 import { kanban, stepIndex, stepDataIndex } from './kanbanScheme'
 
 let version = 1
-let db: IDBDatabase
+export let db: IDBDatabase
 DBOpen()
-export function DBOpen() {
+export async function DBOpen() {
   // need :stepIndex, kanban, !title
   const dbReq = indexedDB.open('kanban', version)
   dbReq.onsuccess = () => (db = dbReq.result)
@@ -15,10 +15,9 @@ export function DBOpen() {
     // db.createObjectStore(, { keyPath: 'index' })
     console.log('db opened!')
   }
-  console.log(db)
 }
 
-export async function getAll(kan: kanban) {
+export async function getAll(kan: kanban[]) {
   // need :stepIndex, kanban, !title
   const step = ['Todo', 'Process', 'Complete']
   step.forEach((title) => {
@@ -36,9 +35,10 @@ export async function getAll(kan: kanban) {
   }
   return kan
 }
+
 export async function getTest() {
   const promise = new Promise((resolve) => {
-    const idbKanban: kanban = []
+    const idbKanban: kanban[] = []
     stepIndex.forEach((i) => {
       getStepData(kanban[i].step)
     })
@@ -58,7 +58,7 @@ export async function getTest() {
   return res
 }
 
-export function modifyAll(kanban: kanban) {
+export function modifyAll(kanban: kanban[]) {
   // need :stepIndex, kanban, stepDataIndex
   const res = stepIndex.map((i) => {
     // 스텝 스토어 연결

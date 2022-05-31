@@ -3,8 +3,8 @@ export type kanban = {
   title: string
   task: string[]
   index: number
-}[]
-export const kanban: kanban = [
+}
+export const kanban: kanban[] = [
   // 인덱스는 각 스텝 타이틀의 순서를 나타냄
   { step: 'Todo', title: 'todayWork', task: [], index: 4 },
   { step: 'Todo', title: '0.0.z', task: [], index: 3 },
