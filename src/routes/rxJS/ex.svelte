@@ -25,3 +25,4 @@
 </script>
 
 <div contenteditable="true" bind:textContent={text} />
+아직 뭐가 뭔지 모르겟다
