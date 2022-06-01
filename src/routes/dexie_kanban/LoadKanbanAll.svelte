@@ -1,11 +1,16 @@
 <script lang="ts">
   import { liveQuery, type Observable } from 'dexie'
+  import { onMount } from 'svelte'
   import { db, type Kanban } from './db'
 
   let Todo: Observable<Kanban[]> | Kanban[]
   Todo = liveQuery(() => db.Todo.reverse().toArray())
   let Process = liveQuery(() => db.Process.reverse().toArray())
   let Complete = liveQuery(() => db.Complete.reverse().toArray())
+
+  onMount(() => {
+    console.log(Todo)
+  })
 </script>
 
 <!-- 오류 우에 잡노.. -->
