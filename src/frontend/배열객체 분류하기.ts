@@ -1,4 +1,10 @@
-const arr = [
+
+type List = {
+    title: string;
+    category: string;
+    link: string;
+}
+const arr:List[] = [
   {title:"1", category:"a", link:"link/1"},
   {title:"2", category:"a", link:"link/2"},
   {title:"3", category:"a", link:"link/3"},
@@ -17,7 +23,7 @@ const arr = [
 ]
 
 // 카테고리 정렬
-let categoryArray = []
+const categoryArray:any[] = []
 arr.forEach(item=>{
   const {title, category, link} = item
   // categoryArray에 카테고리가 없으면 새로운 카테고리를 추가하고, 배열로 만듬
@@ -28,7 +34,7 @@ arr.forEach(item=>{
 
 console.log(categoryArray)
 // 정렬결과
-// [
+// const bb = [
 //   a: [
 //     { title: '1', link: 'link/1' },
 //     { title: '2', link: 'link/2' },
