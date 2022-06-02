@@ -41,9 +41,23 @@ smooth-scrollbar(부드러운 스크롤바),
 ### 배경화면 애니메이션
 tsparticles(인터렉션 배경화면 장난감 스노우쓰면 괜찮을듯), 
 
+### 애니메이션
+lottie 애프터이팩트 애니메이션을 재생시켜주는 라이브러리
 
-
+svelte-lottie-player
+lottie-nodejs 
+lottie-web
+이런것들이 잇음.
+### chart
+chartjs
 echarts(아파치재단에서 만든 차트), 
+
+
+### 캔버스 라이브러리
+paper.js 벡터기반
+pixijs 캔버스 기본인듯
+Fabric.js 이것도 캔버스 기본, 그림객체를 사용
+signature_pad 사인 받는 패드
 
 
 
