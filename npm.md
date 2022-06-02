@@ -1,10 +1,13 @@
 # 사용중
 theme-change(테마변경 https://github.com/spences10/sveltekit-theme-switch/blob/main/src/routes/index.svelte)
-svelte-use-mousetrap(잘됨. 인풋박스 안에서는 안먹히고 있음)
+svelte-use-mousetrap(키바인딩, 잘됨. 인풋박스 안에서는 안먹히고 있음)
 sortablejs(드래그엔드롭 리스트. 흥미롭군) 
 
 svelte/transition,
 로대시, 
+
+
+
 
 # 써봄직한 도구들, 
 svelte/motion,
@@ -16,8 +19,12 @@ frappe-gantt(대시보드 간트테이블 타임라인),
 # 노션같은 에디터!!!!
 editor.js
 
-
+# 그리드
 svelte-grid(드래그앤드롭 갤러리), 
+gridstackjs
+
+
+
 스윗얼럿2, 
 pikaso(캔바기능), 
 svelte-tags-input(태그모양 잡아주는거), 
@@ -43,7 +50,6 @@ tsparticles(인터렉션 배경화면 장난감 스노우쓰면 괜찮을듯),
 
 ### 애니메이션
 lottie 애프터이팩트 애니메이션을 재생시켜주는 라이브러리
-
 svelte-lottie-player
 lottie-nodejs 
 lottie-web
@@ -65,4 +71,3 @@ signature_pad 사인 받는 패드
 balloon-css(순수css 툴팁), 
 purejs-mousetip(마우스툴팁), 
 
-마우스트랩(키바인딩)-스벨트에서 사용 불가,

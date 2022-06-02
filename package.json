@@ -30,6 +30,7 @@
 		"prettier-plugin-svelte": "^2.5.0",
 		"svelte": "^3.44.0",
 		"svelte-check": "^2.2.6",
+		"svelte-grid": "^5.1.1",
 		"svelte-loading-spinners": "^0.1.7",
 		"svelte-preprocess": "^4.10.5",
 		"tailwindcss": "^3.0.23",
@@ -39,9 +40,12 @@
 	"type": "module",
 	"dependencies": {
 		"@emotion/is-prop-valid": "^1.1.2",
+		"@types/granim": "^2.0.1",
 		"@types/sortablejs": "^1.13.0",
 		"daisyui": "^2.15.1",
 		"dexie": "^3.2.2",
+		"granim": "^2.0.0",
+		"gridjs": "^5.0.2",
 		"idb": "^7.0.1",
 		"lodash-es": "^4.17.21",
 		"lowdb": "^3.0.0",
@@ -50,6 +54,7 @@
 		"sortablejs": "^1.15.0",
 		"svelte-motion": "^0.11.2",
 		"svelte-observable": "^0.4.0",
+		"svelte-use-mousetrap": "^1.0.1",
 		"theme-change": "^2.0.2",
 		"uuid": "^8.3.2"
 	}
