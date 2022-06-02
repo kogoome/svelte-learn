@@ -1,11 +1,12 @@
-# create-sveltekit
+# 스벨트킷 프로젝트 생성
 
 ```
 npm init svelte
 all feature confirm
+npm init
 ```
 
-# add tailwindcss
+# 테일윈드 적용
 
 ```
 npx svelte-add@latest tailwindcss
@@ -23,4 +24,13 @@ git pull origin master
 npm i
 ```
 
-edit svelte
+# 구현된 코드들
+
+src > route > svelte
+
+스벨트 기본기능들. 새로운 학습이 발견되면 작성
+
+- 변수-element 바인딩 `bind:this={x}`
+- 변수-<input> 바인딩  `<input bind:value={x}/>`
+- 변수-<div> 바인딩 `<div contenteditable="false" bind:textContent={x}/>`
+- 함수-event 바인딩 `<button on:click={fnName}>`
