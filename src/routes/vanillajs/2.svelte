@@ -1,5 +1,5 @@
 <script>
-  import { dNd } from '$lib/dragAndDrop/dnd'
+  import { dNd } from 'src/routes/vanillajs/dnd'
   import { onMount } from 'svelte'
   let arr = ['🦊', '🐸', '🐶', '🐱', '🥞', '🥣']
   // onMount(() => {

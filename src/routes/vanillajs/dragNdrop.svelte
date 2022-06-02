@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { dNd } from '../../lib/dragAndDrop/dnd'
+  import { dNd } from './dnd'
   // 사용하기 위해 container, draggable 클래스를 html에 작성해야 한다.
   let items = ['🦊', '🐸', '🐶', '🐱', '🥞', '🥣']
   let indexes = [0, 2, 4]
