@@ -10,7 +10,7 @@
 <div class="text-3xl transition-all">
   {#each indexes as i}
     <div
-      class="container bg-slate-300 rounded-md w-fit text-center h-fit p-3 flex-col justify-center gap-3 m-1"
+      class="container bg-slate-300 rounded-md w-fit text-center h-fit p-3 flex justify-center gap-3 m-1"
     >
       <button class="draggable bg-slate-200 rounded-md h-16 w-16" draggable="true"
         >{items[i]}</button
