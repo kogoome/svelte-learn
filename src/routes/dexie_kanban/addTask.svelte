@@ -3,9 +3,9 @@
 
   let status = ''
   let stepName: 'Todo' | 'Process' | 'Complete' = 'Todo'
-  let titleName = 'todayWork'
+  let titleName = ''
   let taskList = ['1. task']
-  let orderIndex: number = 0
+  let orderIndex: string = '0'
   $: taskIndexArray = [0] // taskList를 위한 인덱스 가이드
 
   async function addTask() {
@@ -24,7 +24,7 @@
       stepName: 'Todo'
       titleName = 'todayWork'
       taskList = ['1. task']
-      orderIndex = 0
+      orderIndex = '0'
       taskIndexArray = [0]
     } catch (error) {
       status = `Failed to add ${titleName}: ${error}`
@@ -43,7 +43,7 @@
   }
 </script>
 
-<div class="bg-slate-200 rounded-2xl m-3 py-5">
+<div class="bg-slate-200 rounded-2xl m-10 py-5">
   <fieldset class="px-10 pt-4">
     <legend class="flex w-full justify-center"><h1>Add new task</h1></legend>
     <div class="flex gap-2">
@@ -58,7 +58,7 @@
       </div>
       <div class="basis-1/2">
         <div class="text-xl">OrderIndex:</div>
-        <input class="input input-bordered w-full" type="number" bind:value={orderIndex} />
+        <input class="input input-bordered w-full" type="text" bind:value={orderIndex} />
       </div>
     </div>
     <div class="text-xl">

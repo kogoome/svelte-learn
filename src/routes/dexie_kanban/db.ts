@@ -4,7 +4,7 @@ export type Kanban = {
   step: 'Todo' | 'Process' | 'Complete'
   title: string
   task: string[]
-  index: number
+  index: string
 }
 
 export class KanbanDexie extends Dexie {
