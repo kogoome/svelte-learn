@@ -1,8 +1,8 @@
 <script>
   import FriendAdder from './FriendAdder.svelte'
   import LoadFriendList from './LoadFriendList.svelte'
-  import QuerryLoadFriendList from './QuerryLoadFriendList.svelte'
-  import QuerryNameFriendsList from './QuerryNameFriendsList.svelte'
+  import QuerryLoadFriendList from './QuerryLoad-FriendList.svelte'
+  import QuerryNameFriendsList from './QuerryName-FriendsList.svelte'
 </script>
 
 <h4>My simple Dexie app</h4>

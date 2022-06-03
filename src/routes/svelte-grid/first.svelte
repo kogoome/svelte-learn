@@ -1,6 +1,6 @@
 <script lang="ts">
   import { gridHelp, Grid } from 'svelte-grid-ts'
-  import { categories, categoryItems } from '../frontend/navItems'
+  import { categories, categoryItems } from '../../frontend/navItems'
   let fillFree = true
 
   const id = () => '_' + Math.random().toString(36).substr(2, 9)
@@ -41,13 +41,12 @@
 </script>
 
 <svelte:head>
-  <title>index page</title>
+  <title>Svelte-grid</title>
 </svelte:head>
 
-<div class="container rounded-xl m-10 py-3 shadow-lg">
+<div class="bg-slate-200 rounded-xl m-10 py-3 shadow-lg">
   <div class="bg-white text-center mb-3">
-    <h1>Feature index page</h1>
-    with svelte-grid
+    <h1>Svelte-grid</h1>
   </div>
   <Grid bind:items {cols} rowHeight={100} let:dataItem fillSpace={fillFree}>
     <div
@@ -58,66 +57,3 @@
     </div>
   </Grid>
 </div>
-
-<style>
-  @-webkit-keyframes AnimationName {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  @-moz-keyframes AnimationName {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  @-o-keyframes AnimationName {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  @keyframes AnimationName {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-
-  .container {
-    background: linear-gradient(
-      -85deg,
-      #ffd6d6,
-      #c2fff9,
-      #fcffd6,
-      #c5ffc2,
-      #d6e3ff,
-      #f3c2ff,
-      #ffd6ef,
-      #c2daff
-    );
-    background-size: 400% 400%;
-    animation: AnimationName 30s ease infinite;
-  }
-</style>
