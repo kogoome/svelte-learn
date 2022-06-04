@@ -1,8 +1,7 @@
 <script lang="ts">
   import Sortable from 'sortablejs'
-  import { liveQuery, type Observable } from 'dexie'
   import { db, type Kanban } from './db'
-  import { fly, fade, slide, blur, scale, draw, crossfade } from 'svelte/transition'
+  import { slide, blur } from 'svelte/transition'
 
   // NOTE 겟 데이터
   type StepIndex = {
@@ -10,7 +9,7 @@
     Process: number[]
     Complete: number[]
   }
-  let stepIndex: StepIndex = { Todo: [], Process: [], Complete: [] }
+  let stepIdxsArray: StepIndex = { Todo: [], Process: [], Complete: [] }
   let all = getDB()
   let awaitKanban = false
   let kanban = [] as Kanban[]
@@ -19,11 +18,11 @@
     const Process = db.Process.reverse().toArray()
     const Complete = db.Complete.reverse().toArray()
     const all = await Promise.all([Todo, Process, Complete]).then(([Todo, Process, Complete]) => {
-      const kanban = [...Todo, ...Process, ...Complete]
+      const kanban: Kanban[] = [...Todo, ...Process, ...Complete]
       const kanbanIndexArr = Array.from({ length: kanban.length }, (v, i) => i)
-      stepIndex['Todo'] = kanbanIndexArr.slice(0, Todo.length)
-      stepIndex['Process'] = kanbanIndexArr.slice(Todo.length, Todo.length + Process.length)
-      stepIndex['Complete'] = kanbanIndexArr.slice(Todo.length + Process.length)
+      stepIdxsArray['Todo'] = kanbanIndexArr.slice(0, Todo.length)
+      stepIdxsArray['Process'] = kanbanIndexArr.slice(Todo.length, Todo.length + Process.length)
+      stepIdxsArray['Complete'] = kanbanIndexArr.slice(Todo.length + Process.length)
       return kanban
     })
     return all
@@ -41,7 +40,7 @@
   type Containers = {
     [key: string]: HTMLElement
   }
-  // let stepList = ['Todo', 'Process', 'Complete'] // Object.keys(stepIndex) 로 대체 가능
+  // let stepList = ['Todo', 'Process', 'Complete'] // Object.keys(stepIdxsArray) 로 대체 가능
   let containersObj: Containers = {}
   let expand = true
 
@@ -78,22 +77,7 @@
   }
 
   // 디비 업데이트 전에 할 작업
-  function dataChange() {
-    let indexCollection = document.querySelectorAll('.indexNumber') as NodeListOf<HTMLInputElement>
 
-    for (let i = 0; i < indexCollection.length; i++) {
-      const immutableTitle = indexCollection[i].nextElementSibling?.innerHTML
-      const mutableIndex = indexCollection[i].innerText
-      const mutableStep =
-        indexCollection[i].parentElement?.parentElement?.previousElementSibling?.innerHTML
-      // console.log(mutableStep, immutableTitle, mutableIndex)
-      // kanban배열에서 title을 검색해서 인덱스 반환시키고, 인덱스로 객체 불러와서 데이터 변조하자.
-      const kIndex = kanban.findIndex((item) => item.title === immutableTitle)
-
-      kanban[kIndex].step = mutableStep as 'Todo' | 'Process' | 'Complete'
-      kanban[kIndex].index = mutableIndex
-    }
-  }
   function editToggle() {
     // 중복코드 잘 보임  리팩토링 필요
     const edit = document.getElementById('edit')
@@ -120,11 +104,57 @@
         break
     }
   }
+  function listUpload() {
+    dataChange()
+    console.log(kanban)
+    dbUpload()
+
+    function dbUpload() {
+      kanban.forEach((item) => {
+        item.step
+        switch (item.step) {
+          case 'Todo':
+            db.Todo.clear()
+            db.Todo.put(item)
+            break
+          case 'Process':
+            db.Process.clear()
+            db.Process.put(item)
+            break
+          case 'Complete':
+            db.Complete.clear()
+            db.Complete.put(item)
+            break
+        }
+      })
+    }
+
+    function dataChange() {
+      let indexCollection = document.querySelectorAll(
+        '.indexNumber'
+      ) as NodeListOf<HTMLInputElement>
+
+      for (let i = 0; i < indexCollection.length; i++) {
+        const immutableTitle = indexCollection[i].nextElementSibling?.innerHTML
+        const mutableIndex = indexCollection[i].innerText
+        const mutableStep =
+          indexCollection[i].parentElement?.parentElement?.previousElementSibling?.innerHTML
+        // console.log(mutableStep, immutableTitle, mutableIndex)
+        // kanban배열에서 title을 검색해서 인덱스 반환시키고, 인덱스로 객체 불러와서 데이터 변조하자.
+        const kIndex = kanban.findIndex((item) => item.title === immutableTitle)
+
+        kanban[kIndex].step = mutableStep as 'Todo' | 'Process' | 'Complete'
+        kanban[kIndex].index = mutableIndex
+      }
+    }
+  }
+
+  function addList() {}
 </script>
 
 <div>
+  <button class="btn btn-ghost btn-sm" on:click={listUpload}>list-upload</button>
   <button class="btn btn-ghost btn-sm" on:click={editToggle} id="edit">edit-off</button>
-  <button class="btn btn-ghost btn-sm" on:click={dataChange}>dataChange</button>
   <button
     class="btn btn-ghost btn-sm"
     on:click={() => {
@@ -134,29 +164,39 @@
 </div>
 {#if awaitKanban}
   <!-- await 블록을 사용하면 일부 데이터바인딩에서 오류가 발생. 상위 데이터에서 프로미스 덴을 이용하여 await블록을 회피할수 잇는 boolean 값으로 대체 -->
-  <div class="flex gap-2 bg-slate-200 p-1 m-10 rounded-3xl shadow-md" transition:blur>
-    {#each Object.entries(stepIndex) as [stepName, sIndex]}
-      <div
-        class="basis-1/3 bg-slate-100 rounded-2xl shadow-inner drop-shadow-lg flex flex-col gap-2 pt-2 pb-6"
-      >
-        <h1 class="bg-white flex justify-center">{stepName}</h1>
-        <div bind:this={containersObj[stepName]} class="flex flex-col gap-2 px-2">
-          {#each sIndex as i}
-            <div class="bg-slate-200 p-2 rounded-xl">
+  <div class="flex gap-5 [bg-slate-200 shadow-md] p-1 m-5 rounded-3xl" transition:blur>
+    {#each Object.entries(stepIdxsArray) as [stepName, stepIdxs]}
+      <!-- 스텝 -->
+      <div class="basis-1/3 bg-slate-100 rounded-lg drop-shadow-lg flex flex-col gap-2 py-5">
+        <div class="bg-white flex justify-between items-center">
+          <div class="basis-1/3 " />
+          <div class="basis-1/3  text-4xl text-center">{stepName}</div>
+          <div class="basis-1/3  text-right p-1 items-center">
+            <button
+              class="btn btn-ghost hover:btn-warning btn-sm rounded-xl py-2 text-slate-400"
+              data-step={stepName}
+              on:click={addList}>+</button
+            >
+          </div>
+        </div>
+        <div bind:this={containersObj[stepName]} class="flex flex-col gap-2 [px-2]">
+          {#each stepIdxs as titleIdx}
+            <!-- 타이틀 -->
+            <div class="bg-slate-200 p-2 [rounded-xl]">
               <div
                 contenteditable="false"
-                bind:textContent={kanban[i].index}
+                bind:textContent={kanban[titleIdx].index}
                 class="indexNumber hidden"
               />
               <div
-                class="text-2xl font-medium title rounded-lg pb-1"
+                class="text-2xl title rounded-lg pb-1"
                 contenteditable="false"
-                bind:textContent={kanban[i].title}
+                bind:textContent={kanban[titleIdx].title}
               />
 
               {#if expand}
                 <div class="bg-slate-300 shadow-inner rounded-lg">
-                  {#each kanban[i].task as t}
+                  {#each kanban[titleIdx].task as t}
                     <div
                       contenteditable="false"
                       bind:textContent={t}
