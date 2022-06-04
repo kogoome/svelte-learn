@@ -17,6 +17,7 @@
     as [key, value], index
   </h2>
   <div class="flex justify-center items-center">
+
     {#each Object.entries(obj) as [key, value], index}
       index:<span class="text-red-500">{index}</span>
       <div class="bg-teal-200 m-2 p-2 rounded-lg text-cyan-800">
@@ -24,5 +25,6 @@
         <div>value:{value}</div>
       </div>
     {/each}
+    
   </div>
 </div>

@@ -7,9 +7,21 @@
   import Template from './template.svelte'
 </script>
 
-<Template />
-<BindElement />
-<KeyTransition />
-<LikeForIn />
-<Loading />
-<RadioBinding />
+<div class="rootContainer">
+  <Template />
+  <BindElement />
+  <KeyTransition />
+  <LikeForIn />
+  <Loading />
+  <RadioBinding />
+</div>
+
+<style>
+  .rootContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: fit-content;
+  }
+</style>
