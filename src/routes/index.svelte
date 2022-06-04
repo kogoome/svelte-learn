@@ -1,123 +1,98 @@
 <script lang="ts">
-  import { gridHelp, Grid } from 'svelte-grid-ts'
+  import { onMount } from 'svelte'
   import { categories, categoryItems } from '../frontend/navItems'
-  let fillFree = true
+  import _ from 'lodash-es'
 
-  const id = () => '_' + Math.random().toString(36).substr(2, 9)
-  const randomHexColorCode = () => {
-    let n = (Math.random() * 0xfffff * 1000000).toString(16)
-    return '#' + n.slice(0, 6)
-  }
+  let title = 'Feature index page'
 
-  const contentsArr = categories.map((category) => {
-    const aTag = categoryItems[category].map((item) => {
-      return `<div><a href=${item.link}>${item.title}</a></div>`
-    })
-    const contents = [
-      `<div class="p-2 text-white">
+  const contentsArr = categories
+    .map((category) => {
+      const aTag = categoryItems[category].map((item) => {
+        return `<div><a href=${item.link}>${item.title}</a></div>`
+      })
+      const contents = [
+        `<div class="p-2 text-white w-full ">
         <h3>${category}</h3>
       `,
-      aTag.join(''),
-      `</div>`
+        aTag.join(''),
+        `</div>`
+      ]
+      return contents.join('')
+    })
+    .concat(Array(6).fill(''))
+
+  const randomRgb = () => {
+    let r = Math.floor(Math.random() * 206) + 50
+    let g = Math.floor(Math.random() * 206) + 50
+    let b = Math.floor(Math.random() * 206) + 50
+    return `${r}, ${g}, ${b}`
+  }
+  onMount(() => {
+    window.onresize = () => {
+      startFocus()
+      _.debounce(() => {
+        location.reload()
+      }, 300)()
+    }
+    startFocus()
+    let vdi = [
+      51, 68, 69, 70, 71, 88, 89, 90, 91, 109, 110, 111, 112, 129, 130, 131, 132, 150, 151, 152,
+      153, 170, 171
     ]
-    return contents.join('')
+    vdi.forEach((cardIndex, i) => {
+      let content = <HTMLDivElement>document.querySelector(`[data-index="${cardIndex}"]`)
+      content.innerHTML = contentsArr[i]
+      content.style.backgroundColor = `rgba(${randomRgb()},0.7)`
+    })
   })
 
-  function generateLayout(col: number) {
-    return new Array(15).fill(null).map(function (item, i) {
-      const x = Math.ceil(Math.random() * 4) + 2
-      const y = Math.ceil(Math.random() * 3) + 1
-      return {
-        16: gridHelp.item({ x: (i * 2) % col, y: Math.floor(i / 6) * y, w: 4, h: y }),
-        id: id(),
-        data: { start: randomHexColorCode(), end: randomHexColorCode() },
-        content: contentsArr[i]
-      }
-    })
+  function startFocus() {
+    let firstElement = document.querySelector('[data-index="51"]')
+    firstElement!.scrollIntoView()
   }
-
-  let cols = [[1287, 16]]
-  let items = gridHelp.adjust(generateLayout(16), 16)
 </script>
 
-<svelte:head>
-  <title>index page</title>
-</svelte:head>
-
-<div class="container rounded-xl m-10 py-3 shadow-lg">
-  <div class="bg-white text-center mb-3">
-    <h1>Feature index page</h1>
-    with svelte-grid
+<div class="rootbg w-full relative overflow-hidden">
+  <div class="container flex flex-col absolute top-5 rotate-12 z-0">
+    {#each Array(12).fill(0) as none, tendex}
+      <div class="whitespace-nowrap">
+        {#each Array(20).fill(0) as none, index}
+          <div
+            class="card h-96 w-48 rounded-2xl inline-block mx-2 my-1 shadow-xl px-2 whitespace-normal "
+            data-index={tendex * 20 + index}
+          />
+        {/each}
+      </div>
+    {/each}
   </div>
-  <Grid bind:items {cols} rowHeight={100} let:dataItem fillSpace={fillFree}>
-    <div
-      class="h-full w-full rounded-lg opacity-80 shadow-md"
-      style="background-image: linear-gradient({dataItem.data.start}, {dataItem.data.end});"
-    >
-      {@html dataItem.content}
-    </div>
-  </Grid>
+  <div
+    id="title"
+    class="fixed top-10 w-full text-5xl font-medium px-5 z-20 "
+    on:click={startFocus}
+  >
+    {title}
+  </div>
 </div>
 
 <style>
-  @-webkit-keyframes AnimationName {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+  .rootbg {
+    height: 270vh;
+    background: linear-gradient(-60deg, #ff66d4, #ffa3a3, #fcffd6, #c5ffc2, #c2fff9, #80ecff);
+    width: 100vw;
+    background-size: 100% 100%;
+    /* 애니메이션은 cpu를 너무 먹어서 삭제 */
   }
-  @-moz-keyframes AnimationName {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+  #title {
+    color: white;
+    text-shadow: #8f8f8f 2px 2px 3px;
+    background-color: rgba(0, 0, 0, 0.1);
   }
-  @-o-keyframes AnimationName {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+  .card {
+    background-color: rgba(255, 255, 255, 0.3);
   }
-  @keyframes AnimationName {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-
   .container {
-    background: linear-gradient(
-      -85deg,
-      #ffd6d6,
-      #c2fff9,
-      #fcffd6,
-      #c5ffc2,
-      #d6e3ff,
-      #f3c2ff,
-      #ffd6ef,
-      #c2daff
-    );
-    background-size: 400% 400%;
-    animation: AnimationName 30s ease infinite;
+    width: 800px;
+    top: -20%;
+    left: -16%;
   }
 </style>
