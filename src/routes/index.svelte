@@ -34,16 +34,16 @@
         location.reload()
       }, 300)()
     }
-    startFocus()
-    let vdi = [
+    let visivleDivIndex = [
       51, 68, 69, 70, 71, 88, 89, 90, 91, 109, 110, 111, 112, 129, 130, 131, 132, 150, 151, 152,
       153, 170, 171
     ]
-    vdi.forEach((cardIndex, i) => {
+    visivleDivIndex.forEach((cardIndex, i) => {
       let content = <HTMLDivElement>document.querySelector(`[data-index="${cardIndex}"]`)
       content.innerHTML = contentsArr[i]
       content.style.backgroundColor = `rgba(${randomRgb()},0.7)`
     })
+    startFocus()
   })
 
   function startFocus() {
@@ -65,11 +65,7 @@
       </div>
     {/each}
   </div>
-  <div
-    id="title"
-    class="fixed top-10 w-full text-5xl font-medium px-5 z-20 "
-    on:click={startFocus}
-  >
+  <div id="title" class="fixed top-10 w-full text-5xl font-medium px-5 z-20 " on:click={startFocus}>
     {title}
   </div>
 </div>
