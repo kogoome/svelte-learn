@@ -47,7 +47,6 @@
 		"@types/sortablejs": "^1.13.0",
 		"daisyui": "^2.15.1",
 		"dexie": "^3.2.2",
-		"granim": "^2.0.0",
 		"gridjs": "^5.0.2",
 		"idb": "^7.0.1",
 		"lodash-es": "^4.17.21",
@@ -55,9 +54,11 @@
 		"minisearch": "^4.0.3",
 		"rxjs": "^7.5.5",
 		"sortablejs": "^1.15.0",
+		"svelte-alertnotify": "^1.0.3",
 		"svelte-motion": "^0.11.2",
 		"svelte-observable": "^0.4.0",
 		"svelte-use-mousetrap": "^1.0.1",
+		"sweetalert2": "^11.4.17",
 		"theme-change": "^2.0.2",
 		"uuid": "^8.3.2"
 	}
