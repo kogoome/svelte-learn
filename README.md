@@ -11,7 +11,8 @@ npm init
 ```
 npx svelte-add@latest tailwindcss
 ```
-
+# 플랫티콘 아이콘 사용
+<a href="https://www.flaticon.com/free-icons/color-palette" title="color palette icons">Color palette icons created by Freepik - Flaticon</a>
 # 깃 연결
 
 ```
