@@ -3,7 +3,7 @@
   import { categories, categoryItems } from '../frontend/navItems'
   import _ from 'lodash-es'
 
-  let title = 'Feature index page'
+  let title = 'index'
 
   const contentsArr = categories
     .map((category) => {
@@ -65,7 +65,11 @@
       </div>
     {/each}
   </div>
-  <div id="title" class="fixed top-10 w-full text-5xl font-medium px-5 z-20 " on:click={startFocus}>
+  <div
+    id="title"
+    class="fixed top-10 h-24 w-full text-5xl font-medium px-5 z-20 pt-8 "
+    on:click={startFocus}
+  >
     {title}
   </div>
 </div>
@@ -80,8 +84,8 @@
   }
   #title {
     color: white;
-    text-shadow: #8f8f8f 2px 2px 3px;
-    background-color: rgba(0, 0, 0, 0.1);
+    text-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px;
+    background-color: rgba(0, 0, 0, 0.04);
   }
   .card {
     background-color: rgba(255, 255, 255, 0.3);
