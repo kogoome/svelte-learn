@@ -1,3 +1,4 @@
+import { listUpload } from './kanbanFunctions'
 /* 
 ! 키보드 이벤트
 - keypress 
@@ -51,6 +52,7 @@ export function titleKeyDown(e: KeyboardEvent) {
   if (keys[27] || (!keys[17] && keys[13])) {
     // esc
     esc_focusOut(currentTitle)
+    listUpload()
   } else if ((keys[17] && keys[38]) || (keys[38] && keys[25])) {
     // ctrl + up
     ctrlUp_moveToTitle('prev')
@@ -66,6 +68,9 @@ export function titleKeyDown(e: KeyboardEvent) {
   } else if (keys[40] || (keys[17] && keys[13])) {
     // down or ctrl enter
     moveToInnerTask()
+  } else if (keys[16] && keys[46]) {
+    // shift + delete
+    currentTitle.innerHTML = ''
   }
   function ctrlUp_moveToTitle(direction: 'prev' | 'next') {
     e.preventDefault()
@@ -132,9 +137,10 @@ export function taskKeyDown(e: KeyboardEvent) {
     enter_addTaskDivElement()
   } else if (keys[27]) {
     esc_focusOut(currentTask)
-  } else if (keys[38] && !keys[17]) {
+    listUpload()
+  } else if (keys[38] && !keys[17] && !keys[16]) {
     up_down_moveToTask(prev)
-  } else if (keys[40] && !keys[17]) {
+  } else if (keys[40] && !keys[17] && !keys[16]) {
     up_down_moveToTask(next)
   } else if (keys[8]) {
     backSpace_removeEmptyTaskElement()
