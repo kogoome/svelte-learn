@@ -54,10 +54,10 @@ export function titleKeyDown(e: KeyboardEvent) {
     // esc
     esc_focusOut(currentTitle)
     listUpload()
-  } else if ((keys[17] && keys[38]) || (keys[38] && keys[25])) {
+  } else if ((keys[17] && keys[38] && !keys[16]) || (keys[38] && keys[25])) {
     // ctrl + up || up + right ctrl
     ctrlUp_moveToTitle('prev')
-  } else if ((keys[17] && keys[40]) || (keys[40] && keys[25])) {
+  } else if ((keys[17] && keys[40] && !keys[16]) || (keys[40] && keys[25])) {
     // ctrl + down || down + right ctrl
     ctrlUp_moveToTitle('next')
   } else if ((keys[17] && keys[37] && !keys[16]) || (keys[37] && keys[25])) {
@@ -66,7 +66,7 @@ export function titleKeyDown(e: KeyboardEvent) {
   } else if ((keys[17] && keys[39] && !keys[16]) || (keys[39] && keys[25])) {
     // ctrl + right + !shift || right + right ctrl
     moveCursorToProcessTitle('next')
-  } else if (keys[40] || (keys[17] && keys[13])) {
+  } else if ((keys[40] && !keys[16]) || (keys[17] && keys[13])) {
     // down or ctrl enter
     moveToInnerTask()
   } else if (keys[16] && keys[46] && !keys[17]) {
@@ -83,6 +83,50 @@ export function titleKeyDown(e: KeyboardEvent) {
     moveDivToProcess('next')
   } else if (keys[112]) {
     // F1 개발자용 키보드 이벤트
+    developManConsole()
+  } else if (keys[17] && keys[16] && keys[38]) {
+    // ctrl + shift + up
+    moveDivUpDown('up')
+  } else if (keys[17] && keys[16] && keys[40]) {
+    // ctrl + shift + down
+    moveDivUpDown('down')
+  }
+  function moveDivUpDown(option: 'up' | 'down') {
+    e.preventDefault()
+    const currentIdx = currentTitle.getAttribute('data-index')
+    const currentParent = currentTitle.parentElement as HTMLDivElement
+    const currentProcessDiv = document.querySelector(
+      `[data-sortable="${process}"]`
+    ) as HTMLDivElement
+    const prevParent = currentParent.previousElementSibling
+    const nextParent = currentParent.nextElementSibling
+    const nNextNode = nextParent?.nextSibling
+    switch (option) {
+      case 'up':
+        if (prevParent) {
+          const prevIdx = prevTitle.getAttribute('data-index')
+          currentTitle.setAttribute('data-index', String(prevIdx))
+          prevTitle.setAttribute('data-index', String(currentIdx))
+          common(prevParent)
+        }
+        break
+      case 'down':
+        if (nextParent && nNextNode) {
+          const nextIdx = nextTitle.getAttribute('data-index')
+          currentTitle.setAttribute('data-index', String(nextIdx))
+          nextTitle.setAttribute('data-index', String(currentIdx))
+          common(nNextNode)
+        }
+        break
+    }
+    function common(ProcessChild: Element | ChildNode) {
+      currentProcessDiv.insertBefore(currentParent, ProcessChild)
+      currentTitle.setAttribute('contenteditable', 'true')
+      currentTitle.focus()
+    }
+  }
+
+  function developManConsole() {
     e.preventDefault()
     console.log(JSON.stringify(keys))
     console.log(currentTitle)
@@ -108,6 +152,7 @@ export function titleKeyDown(e: KeyboardEvent) {
       currentTitle.setAttribute('data-index', String(processDiv.childElementCount))
       currentTitle.setAttribute('data-origin-process', process)
       processDiv.insertBefore(parentDivOfTitleTask, processDiv.firstChild)
+      currentTitle.setAttribute('contenteditable', 'true')
       currentTitle.focus()
     }
   }
