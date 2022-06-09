@@ -33,11 +33,13 @@ h3 {
   /* background-color: hsl(var(--b1));  */
   /* width: 20px; 
   height: 20px; */
-  width: 6px;
+  width: 4px;
   height: 4px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--s) / 4);
+  background-color: rgba(105, 175, 241, 0.5);
+
+  /* background-color: hsl(var(--s) / 4); */
   opacity: 0.4;
   /* box-shadow: inset 10px 0 0 5px hsl(var(--b1)); */
   border-radius: 100px;
