@@ -29,7 +29,7 @@ e.data = "한"
 
 const keys: {
   [key: number]: boolean
-} = []
+} = {}
 export function keyUp(e: KeyboardEvent) {
   // console.log(e.keyCode)
   keys[e.keyCode] = false
@@ -37,7 +37,8 @@ export function keyUp(e: KeyboardEvent) {
 export function titleKeyDown(e: KeyboardEvent) {
   keys[e.keyCode] = true
   const currentTitle = e.currentTarget as HTMLDivElement
-  const process = currentTitle.getAttribute('data-origin-process')
+  const parentDivOfTitleTask = currentTitle.parentElement as HTMLDivElement
+  const process = currentTitle.getAttribute('data-origin-process') as string
   const processArr = ['Todo', 'InProgress', 'Complete']
   const i = processArr.findIndex((item) => item === process)
   const prevProcess = i === 0 ? processArr[2] : processArr[i - 1]
@@ -54,23 +55,73 @@ export function titleKeyDown(e: KeyboardEvent) {
     esc_focusOut(currentTitle)
     listUpload()
   } else if ((keys[17] && keys[38]) || (keys[38] && keys[25])) {
-    // ctrl + up
+    // ctrl + up || up + right ctrl
     ctrlUp_moveToTitle('prev')
   } else if ((keys[17] && keys[40]) || (keys[40] && keys[25])) {
-    // ctrl + down
+    // ctrl + down || down + right ctrl
     ctrlUp_moveToTitle('next')
   } else if ((keys[17] && keys[37] && !keys[16]) || (keys[37] && keys[25])) {
-    // ctrl + left + !shift
-    moveToProcessTitle('prev')
+    // ctrl + left + !shift || left + right ctrl
+    moveCursorToProcessTitle('prev')
   } else if ((keys[17] && keys[39] && !keys[16]) || (keys[39] && keys[25])) {
-    // ctrl + right + !shift
-    moveToProcessTitle('next')
+    // ctrl + right + !shift || right + right ctrl
+    moveCursorToProcessTitle('next')
   } else if (keys[40] || (keys[17] && keys[13])) {
     // down or ctrl enter
     moveToInnerTask()
-  } else if (keys[16] && keys[46]) {
+  } else if (keys[16] && keys[46] && !keys[17]) {
     // shift + delete
     currentTitle.innerHTML = ''
+  } else if (keys[17] && keys[16] && keys[46]) {
+    // ctrl + shift + delete
+    deleteElement()
+  } else if (keys[17] && keys[16] && keys[37]) {
+    // ctrl + shift + left
+    moveDivToProcess('prev')
+  } else if (keys[17] && keys[16] && keys[39]) {
+    // ctrl + shift + right
+    moveDivToProcess('next')
+  } else if (keys[112]) {
+    // F1 개발자용 키보드 이벤트
+    e.preventDefault()
+    console.log(JSON.stringify(keys))
+    console.log(currentTitle)
+  }
+  function moveDivToProcess(direction: 'prev' | 'next') {
+    e.preventDefault()
+    // keys[17] = false
+    // keys[16] = false
+    keys[37] = false
+    keys[39] = false
+    switch (direction) {
+      case 'prev':
+        logic(prevProcess)
+        break
+      case 'next':
+        logic(nextProcess)
+        break
+    }
+    function logic(process: string) {
+      parentDivOfTitleTask
+      process
+      const processDiv = document.querySelector(`[data-sortable="${process}"]`) as HTMLDivElement
+      currentTitle.setAttribute('data-index', String(processDiv.childElementCount))
+      currentTitle.setAttribute('data-origin-process', process)
+      processDiv.insertBefore(parentDivOfTitleTask, processDiv.firstChild)
+      currentTitle.focus()
+    }
+  }
+  function deleteElement() {
+    keys[17] = false
+    keys[16] = false
+    keys[46] = false
+    e.preventDefault()
+    if (!parentDivOfTitleTask) return false
+    const trashBox = document.getElementById('trashBox')
+    if (!trashBox) return false
+    currentTitle.setAttribute('data-origin-process', 'trashBox')
+    trashBox.appendChild(parentDivOfTitleTask)
+    console.log(trashBox)
   }
   function ctrlUp_moveToTitle(direction: 'prev' | 'next') {
     e.preventDefault()
@@ -91,7 +142,7 @@ export function titleKeyDown(e: KeyboardEvent) {
       }
     }
   }
-  function moveToProcessTitle(direction: 'prev' | 'next') {
+  function moveCursorToProcessTitle(direction: 'prev' | 'next') {
     e.preventDefault()
     e.stopPropagation()
     switch (direction) {
@@ -112,7 +163,7 @@ export function titleKeyDown(e: KeyboardEvent) {
         currentTitle.setAttribute('contenteditable', 'false')
         prevOrNextProcessTitleElement.focus()
       } else if (negativeProcessTitleElement) {
-        moveToProcessTitle(nagativeDirection)
+        moveCursorToProcessTitle(nagativeDirection)
       }
     }
   }
@@ -147,6 +198,7 @@ export function taskKeyDown(e: KeyboardEvent) {
   } else if (keys[17] && keys[38]) {
     // ctrl + up
     ctrlUp_moveToTitleFromTask()
+    pressKeyCodeSync(17)
   } else if (keys[16] && keys[46]) {
     // shift + delete
     currentTask.innerHTML = ''
@@ -210,15 +262,21 @@ export function taskKeyDown(e: KeyboardEvent) {
   }
 }
 
-function esc_focusOut(currentDivElement: HTMLDivElement) {
+export function esc_focusOut(currentDivElement: HTMLDivElement) {
   // NOTE 키업이벤트가 일어나지 않으므로 할당된 키코드 강제 할당제거
   keys[27] = false
   keys[13] = false
   currentDivElement.setAttribute('contenteditable', 'false')
+  currentDivElement.blur()
+  // listUpload()
 }
 
 export function contentDbClick(e: Event) {
   const currentDiv = <HTMLDivElement>e.target
   currentDiv.setAttribute('contenteditable', 'true')
   currentDiv.focus()
+}
+
+export function pressKeyCodeSync(keyCode: number) {
+  keys[keyCode] = true
 }

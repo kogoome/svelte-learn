@@ -79,43 +79,53 @@ export function sortableOn() {
         taskExpand('on')
         if (!trashBoxActive) trashBox('off')
         // 드롭한 시점에서 뷰의 정보구조를 읽어오고
-        const addresses: {
-          [key: string]: {
-            newProcessAdr: HTMLElement | null | undefined
-            indexNProcessAdr: HTMLDivElement
-          }[]
-        } = await dataFarmingAdr()
-        // 카테고리별 랭스를 통해 인덱스 값을 찾아서
-        let lastIndexTodo = addresses.todoAddress.length - 1
-        let lastIndexInprogress = addresses.inprogressAddress.length - 1
-        let lastIndexComplete = addresses.completeAddress.length - 1
-        for (const processAdr in addresses) {
-          // 인덱스만 변경해보자.
-          addresses[processAdr].forEach((adrObj) => {
-            switch (processAdr) {
-              case 'todoAddress':
-                adrObj.indexNProcessAdr.setAttribute('data-index', `${lastIndexTodo--}`)
-                break
-              case 'inprogressAddress':
-                adrObj.indexNProcessAdr.setAttribute('data-index', `${lastIndexInprogress--}`)
-                break
-              case 'completeAddress':
-                adrObj.indexNProcessAdr.setAttribute('data-index', `${lastIndexComplete--}`)
-                break
-            }
-          })
-        }
+        await allIndexUpdate()
         listUpload()
       }
     })
   }
 }
+
+async function allIndexUpdate() {
+  const addresses: {
+    [key: string]: {
+      newProcessAdr: HTMLElement | null | undefined
+      indexNProcessAdr: HTMLDivElement
+    }[]
+  } = await dataFarmingAdr()
+  // 카테고리별 랭스를 통해 인덱스 값을 찾아서
+  let lastIndexTodo = addresses.todoAddress.length - 1
+  let lastIndexInprogress = addresses.inprogressAddress.length - 1
+  let lastIndexComplete = addresses.completeAddress.length - 1
+  for (const processAdr in addresses) {
+    // 인덱스만 변경해보자.
+    addresses[processAdr].forEach((adrObj) => {
+      switch (processAdr) {
+        case 'todoAddress':
+          adrObj.indexNProcessAdr.setAttribute('data-index', `${lastIndexTodo--}`)
+          break
+        case 'inprogressAddress':
+          adrObj.indexNProcessAdr.setAttribute('data-index', `${lastIndexInprogress--}`)
+          break
+        case 'completeAddress':
+          adrObj.indexNProcessAdr.setAttribute('data-index', `${lastIndexComplete--}`)
+          break
+      }
+    })
+  }
+}
+
 export async function listUpload() {
   taskExpand('on')
   const dataSet = dataFarming()
-  console.log(dataSet)
+  // console.log(dataSet)
   dbClear()
-    .then(async () => bundleBulkUpload(await dataSet))
+    .then(async () => {
+      bundleBulkUpload(await dataSet)
+      // 이걸 쓰면 접고펴기에서 데이터 손실이 없는 반면, 트랜지션을 못씀. => 스벨트 트렌지션 말구 css 쓰면 어떰
+      // 데이터 리로드하는 과정에서 너무 못생겨지기 때문.
+      // saveStoreBulk(await dataSet)
+    })
     .then(() =>
       Swal.fire({
         toast: true,
@@ -163,6 +173,13 @@ export async function listUpload() {
       .then(() => console.log('Upload Complete'))
       .catch((e) => e)
   }
+  function saveStoreBulk(dataSet: { [key: string]: Kanban[] }) {
+    const { todoStore, inprogressStore, completeStore } = dataSet
+    storeTodo.set(todoStore)
+    storeInprogress.set(inprogressStore)
+    storeComplete.set(completeStore)
+  }
+
   async function dataFarming() {
     const address: {
       [key: string]: {
@@ -179,8 +196,8 @@ export async function listUpload() {
         const process = obj.newProcessAdr!.getAttribute('data-sortable')!
         const index = obj.indexNProcessAdr.getAttribute('data-index')! as string
         const title = obj.indexNProcessAdr.innerText
-        const todos = Array.from(obj.indexNProcessAdr.nextElementSibling!.children).map(
-          (task) => task.innerHTML
+        const todos = Array.from(obj.indexNProcessAdr.nextElementSibling!.children).map((task) =>
+          task.innerHTML.replace('<br>', '')
         )
         const item = { title, todos, index: Number(index) }
         switch (process) {
@@ -228,7 +245,7 @@ async function dataFarmingAdr() {
   }
   return { todoAddress, inprogressAddress, completeAddress }
 }
-export function f1_tutorial() {
+export function f1_help() {
   Swal.fire({
     title: '<strong>keyboard shortcut</strong>',
     html: `
@@ -258,6 +275,19 @@ export function f1_tutorial() {
       </span>
       : add task in Todo
     </div>
+    <div>
+      <span class="font-medium">
+        <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">ctrl</span> +
+        <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">space</span>
+      </span>
+      : first task editable
+    </div>
+    <div>
+      <span class="font-medium">
+        <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">del</span>
+      </span>
+      : trashBox toggle
+    </div>
   </div>
   <div class="bg-slate-100 rounded-md px-10 pb-2 flex flex-col gap-1 text-left">
     <div class="text-xl font-medium text-orange-600 text-center">TITLE FOCUS</div>
@@ -271,10 +301,25 @@ export function f1_tutorial() {
     <div>
       <span class="font-medium">
         <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">ctrl</span> +
+        <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">shift</span> +
+        <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">arrow key</span>
+      </span>
+      : move div
+    </div>
+    <div>
+      <span class="font-medium">
+        <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">ctrl</span> +
         <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">enter</span>,
         <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">arrow down</span>
       </span>
       : move task
+    </div>
+    <div>
+      <span class="font-medium">
+        <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">ctrl</span> +
+        <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">del</span>
+      </span>
+      : delete title-task package
     </div>
     <div>
       <span class="font-medium">
@@ -305,6 +350,12 @@ export function f1_tutorial() {
         <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">enter</span>
       </span>
       : add task 
+    </div>
+    <div>
+      <span class="font-medium">
+        <span class="border-2 border-solid rounded-lg px-1 bg-slate-300">backspace</span>
+      </span>
+      : delete task
     </div>
     <div>
       <span class="font-medium">
@@ -340,17 +391,44 @@ export function trashBox(option?: string) {
   }
 }
 
+// export function taskExpand(option?: string) {
+//   if (!option) option = 'toggle'
+//   switch (option) {
+//     case 'on':
+//       taskBlockExpand.set(true)
+//       break
+//     case 'off':
+//       taskBlockExpand.set(false)
+//       break
+//     default:
+//       taskBlockExpand.set(!subscribe_taskBlockExpand)
+//       break
+//   }
+// }
 export function taskExpand(option?: string) {
   if (!option) option = 'toggle'
+  const allTasks = document.querySelectorAll('.taskTransition')
   switch (option) {
     case 'on':
-      taskBlockExpand.set(true)
+      allTasks.forEach((task) => {
+        task.classList.remove('opacity-0')
+        task.classList.remove('h-0')
+        task.classList.add('opacity-100')
+      })
       break
     case 'off':
-      taskBlockExpand.set(false)
+      allTasks.forEach((task) => {
+        task.classList.remove('opacity-100')
+        task.classList.add('opacity-0')
+        task.classList.add('h-0')
+      })
       break
     default:
-      taskBlockExpand.set(!subscribe_taskBlockExpand)
+      allTasks.forEach((task) => {
+        task.classList.toggle('opacity-0')
+        task.classList.toggle('opacity-100')
+        task.classList.toggle('h-0')
+      })
       break
   }
 }
@@ -361,7 +439,6 @@ export function firstTitleFocus(option?: 'Todo' | 'InProgress' | 'Complete') {
     if (!option) option = 'Todo'
     const selector = `[data-origin-process="${option}"]`
     const firstTitle = document.querySelector(selector) as HTMLDivElement
-    console.log(firstTitle)
     firstTitle.setAttribute('contenteditable', 'true')
     firstTitle.focus()
     taskExpand('on')
