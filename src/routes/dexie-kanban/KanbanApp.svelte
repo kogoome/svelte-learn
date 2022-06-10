@@ -38,6 +38,41 @@
     .catch((e) => {
       console.log(e)
     })
+
+  const processNameColor: {
+    [key: string]: string
+  } = {
+    Todo: 'bg-amber-400',
+    InProgress: 'bg-blue-300',
+    Complete: 'bg-green-300'
+  }
+
+  const color = [
+    'bg-red-200',
+    'bg-orange-200',
+    'bg-yellow-200',
+    'bg-green-200',
+    'bg-blue-200',
+    'bg-indigo-200',
+    'bg-purple-200',
+    'bg-teal-200',
+    'bg-amber-200',
+    'bg-fuchsia-200',
+    'bg-emerald-200',
+    'bg-lime-200',
+    'bg-cyan-200',
+    'bg-pink-200',
+    'bg-rose-200',
+    '',
+    '',
+    '',
+    '',
+    ''
+  ]
+
+  const randomColor = () => {
+    return color[Math.floor(Math.random() * color.length)]
+  }
 </script>
 
 <!-- 단축키 -->
@@ -70,7 +105,7 @@
 <TopButtons />
 <!-- 칸반테이블 bg-gradient-to-r from-green-50 to-blue-100-->
 
-<div class="flex justify-center nm-bg">
+<div class="flex justify-center py-1 nm-bg">
   <!-- bg-gradient-to-br from-white to-slate-100 -->
   <div
     class="flex gap-2 w-[1200px] mx-3 rounded-xl 
@@ -87,7 +122,13 @@
           <div class="basis-1/3 " />
 
           <!-- ANCHOR 프로세스 이름 -->
-          <div class="basis-1/3  text-[1rem] text-center text-gray-500">{process}</div>
+          <div
+            class="basis-1/3  text-[1rem] text-center text-white {processNameColor[
+              process
+            ]} drop-shadow-md rounded-md "
+          >
+            {process}
+          </div>
           <div class="basis-1/3  text-right p-1 items-center">
             <!-- ANCHOR 태스크 추가 버튼 -->
             <button
@@ -104,15 +145,15 @@
         >
           {#if process === 'Todo'}
             {#each $storeTodo as item (item)}
-              <TaskPanel {item} process="Todo" />
+              <TaskPanel {item} process="Todo" titleColor={randomColor()} />
             {/each}
           {:else if process === 'InProgress'}
             {#each $storeInprogress as item (item)}
-              <TaskPanel {item} process="InProgress" />
+              <TaskPanel {item} process="InProgress" titleColor={randomColor()} />
             {/each}
           {:else if process === 'Complete'}
             {#each $storeComplete as item, index (item)}
-              <TaskPanel {item} process="Complete" />
+              <TaskPanel {item} process="Complete" titleColor={randomColor()} />
             {/each}
           {/if}
         </div>

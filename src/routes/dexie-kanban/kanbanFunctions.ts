@@ -440,8 +440,9 @@ export function firstTitleFocus(option?: 'Todo' | 'InProgress' | 'Complete') {
   setTimeout(handler, 100)
   function handler() {
     if (!option) option = 'Todo'
-    const selector = `[data-origin-process="${option}"]`
-    const firstTitle = document.querySelector(selector) as HTMLDivElement
+    const selector = `[data-sortable="${option}"]`
+    const processDiv = document.querySelector(selector) as HTMLDivElement
+    const firstTitle = processDiv.querySelector('[data-ph="Title"]') as HTMLDivElement
     firstTitle.setAttribute('contenteditable', 'true')
     firstTitle.focus()
     taskExpand('on')

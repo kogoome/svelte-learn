@@ -12,11 +12,17 @@
   function onBlur(e: Event) {
     esc_focusOut(e.target as HTMLDivElement)
   }
+  // function changeTheme(e: Event) {
+  //   const title = (<HTMLElement>e.target).parent as HTMLDivElement
+  // }
+  export let titleColor: string
 </script>
 
-<div class="p-2 rounded-sm nm-convex mx-2 my-px">
+<div class="p-1 pb-2 rounded-sm nm-convex mx-2 my-px bg-3">
   <div
-    class="text-[1rem] min-h-[28px] title rounded-md pb-1 flex justify-between items-center outline-none focus:bg-gradient-to-r focus:from-pink-100 focus:to-blue-200 focus:text-rose-500"
+    class="text-[1rem] min-h-[24px] title rounded-md flex justify-between items-center w-fit outline-none focus:bg-gradient-to-r focus:from-pink-100 focus:to-blue-200 focus:text-rose-500
+    mb-1 px-1 {titleColor}
+    "
     contenteditable="false"
     data-origin-process={process}
     data-index={item.index}
@@ -27,8 +33,8 @@
     on:blur={(e) => onBlur(e)}
   >
     {item.title}
-    <!-- <div class="h-3 w-3 bg-slate-400 rounded-full" on:click={changeTheme} /> -->
   </div>
+  <!-- <span class="h-3 w-3 bg-slate-400 rounded-full" on:click={changeTheme} /> -->
   <!-- bg-gradient-to-r from-white to-[#e9f7ff] -->
   <div
     class="taskTransition shadow-inner rounded-sm w-full transition-opacity ease-in-out duration-500
@@ -38,7 +44,7 @@
       <div
         contenteditable="false"
         class="rounded-md px-1 text-gray-500 
-        outline-none focus:bg-gradient-to-r focus:from-amber-100 focus:to-lime-200 focus:text-sky-400
+        outline-none focus:bg-gradient-to-r focus:from-amber-100 focus:to-lime-200 focus:text-sky-500
         "
         data-ph="Task"
         on:keydown={taskKeyDown}
@@ -70,8 +76,8 @@
     box-shadow: 4px 4px 4px #e5e5e5, -4px -4px 4px #ffffff;
   }
   .nm-pressed {
-    /* background: radial-gradient(circle, rgb(230, 235, 240) 13%, rgb(241, 245, 249) 100%); */
     background: linear-gradient(90deg, rgb(243, 243, 243), rgb(253, 253, 253));
-    box-shadow: inset 0px 2px 2px #e9e9e9, inset -0px -2px 2px #fbfbfb;
+    /* box-shadow: inset 0px 2px 2px #e9e9e9, inset -0px -2px 2px #fbfbfb; */
+    /* background: linear-gradient(90deg, rgb(255, 249, 199), rgb(255, 255, 255)); */
   }
 </style>
