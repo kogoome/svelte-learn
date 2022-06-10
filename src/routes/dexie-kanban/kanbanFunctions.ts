@@ -69,9 +69,9 @@ export function sortableOn() {
       animation: 200,
       // delay: 100, 터치 사용시 딜레이가 문제가 될것같은데, 딜레이를 켜면 마우스 사용이 불편해짐.
       // 둘 모두 해결하려면 드래그 버튼을 만들어야 하는데,
-      // 타이틀 관련 parent child 찾는 로직들을 전부 수정해줘야함. 
+      // 타이틀 관련 parent child 찾는 로직들을 전부 수정해줘야함.
       // 필요할때 하자
-      swapThreshold: 0.35,
+      // swapThreshold: 0.35,
       easing: 'cubic-bezier(1, 0, 0, 1)',
       // ghostClass: 'blue-background-class',
       onStart: () => {

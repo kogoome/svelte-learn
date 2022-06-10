@@ -50,7 +50,7 @@
       class="overflow-hidden scroll-smooth opacity-0
       [hover:h-36] transition-all duration-300 ease-in-out
       rounded-xl h-[3.4rem] min-w-[20%] grow mx-1
-      flex justify-start items-center
+      flex justify-start items-start
       bg-gradient-to-r from-pink-100 to-blue-200
       "
     />
