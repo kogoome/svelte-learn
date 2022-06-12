@@ -16,6 +16,32 @@
   //   const title = (<HTMLElement>e.target).parent as HTMLDivElement
   // }
   export let titleColor: string
+
+  const randomColor = () => {
+    const color = [
+      'bg-red-200',
+      'bg-orange-200',
+      'bg-yellow-200',
+      'bg-green-200',
+      'bg-blue-200',
+      'bg-indigo-200',
+      'bg-purple-200',
+      'bg-teal-200',
+      'bg-amber-200',
+      'bg-fuchsia-200',
+      'bg-emerald-200',
+      'bg-lime-200',
+      'bg-cyan-200',
+      'bg-pink-200',
+      'bg-rose-200',
+      '',
+      '',
+      '',
+      '',
+      ''
+    ]
+    return color[Math.floor(Math.random() * color.length)]
+  }
 </script>
 
 <div class="p-1 pb-2 rounded-sm nm-convex mx-2 my-px bg-3">
@@ -30,6 +56,9 @@
     on:keydown={titleKeyDown}
     on:keyup={keyUp}
     on:dblclick={contentDbClick}
+    on:click={() => {
+      titleColor = randomColor()
+    }}
     on:blur={(e) => onBlur(e)}
   >
     {item.title}
@@ -76,7 +105,7 @@
     box-shadow: 4px 4px 4px #e5e5e5, -4px -4px 4px #ffffff;
   }
   .nm-pressed {
-    background: linear-gradient(90deg, rgb(243, 243, 243), rgb(253, 253, 253));
+    background: linear-gradient(90deg, rgb(240, 240, 240), rgb(253, 253, 253));
     /* box-shadow: inset 0px 2px 2px #e9e9e9, inset -0px -2px 2px #fbfbfb; */
     /* background: linear-gradient(90deg, rgb(255, 249, 199), rgb(255, 255, 255)); */
   }

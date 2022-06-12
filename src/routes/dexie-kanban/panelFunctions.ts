@@ -51,46 +51,23 @@ export function titleKeyDown(e: KeyboardEvent) {
     ?.firstElementChild?.firstElementChild as HTMLDivElement
   const innerTask = currentTitle.nextElementSibling?.firstElementChild as HTMLDivElement
   if (keys[27] || (!keys[17] && keys[13])) {
-    // esc
     esc_focusOut(currentTitle)
     listUpload()
-  } else if ((keys[17] && keys[38] && !keys[16]) || (keys[38] && keys[25])) {
-    // ctrl + up || up + right ctrl
-    ctrlUp_moveToTitle('prev')
-  } else if ((keys[17] && keys[40] && !keys[16]) || (keys[40] && keys[25])) {
-    // ctrl + down || down + right ctrl
-    ctrlUp_moveToTitle('next')
-  } else if ((keys[17] && keys[37] && !keys[16]) || (keys[37] && keys[25])) {
-    // ctrl + left + !shift || left + right ctrl
-    moveCursorToProcessTitle('prev')
-  } else if ((keys[17] && keys[39] && !keys[16]) || (keys[39] && keys[25])) {
-    // ctrl + right + !shift || right + right ctrl
-    moveCursorToProcessTitle('next')
-  } else if ((keys[40] && !keys[16]) || (keys[17] && keys[13])) {
-    // down or ctrl enter
-    moveToInnerTask()
-  } else if (keys[16] && keys[46] && !keys[17]) {
-    // shift + delete
-    currentTitle.innerHTML = ''
-  } else if (keys[17] && keys[16] && keys[46]) {
-    // ctrl + shift + delete
-    deleteElement()
-  } else if (keys[17] && keys[16] && keys[37]) {
-    // ctrl + shift + left
-    moveDivToProcess('prev')
-  } else if (keys[17] && keys[16] && keys[39]) {
-    // ctrl + shift + right
-    moveDivToProcess('next')
-  } else if (keys[112]) {
-    // F1 개발자용 키보드 이벤트
-    developManConsole()
-  } else if (keys[17] && keys[16] && keys[38]) {
-    // ctrl + shift + up
-    moveDivUpDown('up')
-  } else if (keys[17] && keys[16] && keys[40]) {
-    // ctrl + shift + down
-    moveDivUpDown('down')
   }
+  if ((keys[17] && keys[38] && !keys[16]) || (keys[38] && keys[25])) ctrlUp_moveToTitle('prev')
+  if ((keys[17] && keys[40] && !keys[16]) || (keys[40] && keys[25])) ctrlUp_moveToTitle('next')
+  if ((keys[17] && keys[37] && !keys[16]) || (keys[37] && keys[25]))
+    moveCursorToProcessTitle('prev')
+  if ((keys[17] && keys[39] && !keys[16]) || (keys[39] && keys[25]))
+    moveCursorToProcessTitle('next')
+  if ((keys[40] && !keys[16]) || (keys[17] && keys[13])) moveToInnerTask()
+  if (keys[16] && keys[46] && !keys[17]) currentTitle.innerHTML = ''
+  if (keys[17] && keys[16] && keys[46]) deleteElement()
+  if (keys[17] && keys[16] && keys[37]) moveDivToProcess('prev')
+  if (keys[17] && keys[16] && keys[39]) moveDivToProcess('next')
+  if (keys[112]) developManConsole()
+  if (keys[17] && keys[16] && keys[38]) moveDivUpDown('up')
+  if (keys[17] && keys[16] && keys[40]) moveDivUpDown('down')
   function moveDivUpDown(option: 'up' | 'down') {
     e.preventDefault()
     const currentIdx = currentTitle.getAttribute('data-index')
@@ -125,7 +102,6 @@ export function titleKeyDown(e: KeyboardEvent) {
       currentTitle.focus()
     }
   }
-
   function developManConsole() {
     e.preventDefault()
     console.log(JSON.stringify(keys))
@@ -229,25 +205,19 @@ export function taskKeyDown(e: KeyboardEvent) {
   const next = currentTask.nextElementSibling as HTMLDivElement | null
   const title = currentTask.parentElement?.previousElementSibling as HTMLDivElement | null
 
-  if (keys[13]) {
-    enter_addTaskDivElement()
-  } else if (keys[27]) {
+  if (keys[13]) enter_addTaskDivElement()
+  if (keys[27]) {
     esc_focusOut(currentTask)
     listUpload()
-  } else if (keys[38] && !keys[17] && !keys[16]) {
-    up_down_moveToTask(prev)
-  } else if (keys[40] && !keys[17] && !keys[16]) {
-    up_down_moveToTask(next)
-  } else if (keys[8]) {
-    backSpace_removeEmptyTaskElement()
-  } else if (keys[17] && keys[38]) {
-    // ctrl + up
+  }
+  if (keys[38] && !keys[17] && !keys[16]) up_down_moveToTask(prev)
+  if (keys[40] && !keys[17] && !keys[16]) up_down_moveToTask(next)
+  if (keys[8]) backSpace_removeEmptyTaskElement()
+  if (keys[17] && keys[38]) {
     ctrlUp_moveToTitleFromTask()
     pressKeyCodeSync(17)
-  } else if (keys[16] && keys[46]) {
-    // shift + delete
-    currentTask.innerHTML = ''
   }
+  if (keys[16] && keys[46]) currentTask.innerHTML = ''
   function backSpace_removeEmptyTaskElement() {
     if (currentTask.innerText.trim() === '') {
       e.preventDefault()
