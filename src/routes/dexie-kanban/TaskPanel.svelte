@@ -44,7 +44,7 @@
   }
 </script>
 
-<div class="p-1 pb-2 rounded-sm nm-convex mx-2 my-px bg-3">
+<div class="p-1 pb-2 rounded-sm nm-convex mx-2 my-px bg-3 bg-amber-300">
   <div
     class="text-[1rem] min-h-[24px] title rounded-md flex justify-between items-center w-fit outline-none focus:bg-gradient-to-r focus:from-pink-100 focus:to-blue-200 focus:text-rose-500
     mb-1 px-1 {titleColor}

@@ -84,7 +84,7 @@ export function titleKeyDown(e: KeyboardEvent) {
           const prevIdx = prevTitle.getAttribute('data-index')
           currentTitle.setAttribute('data-index', String(prevIdx))
           prevTitle.setAttribute('data-index', String(currentIdx))
-          common(prevParent)
+          logic(prevParent)
         }
         break
       case 'down':
@@ -92,11 +92,11 @@ export function titleKeyDown(e: KeyboardEvent) {
           const nextIdx = nextTitle.getAttribute('data-index')
           currentTitle.setAttribute('data-index', String(nextIdx))
           nextTitle.setAttribute('data-index', String(currentIdx))
-          common(nNextNode)
+          logic(nNextNode)
         }
         break
     }
-    function common(ProcessChild: Element | ChildNode) {
+    function logic(ProcessChild: Element | ChildNode) {
       currentProcessDiv.insertBefore(currentParent, ProcessChild)
       currentTitle.setAttribute('contenteditable', 'true')
       currentTitle.focus()
@@ -122,8 +122,8 @@ export function titleKeyDown(e: KeyboardEvent) {
         break
     }
     function logic(process: string) {
-      parentDivOfTitleTask
-      process
+      // parentDivOfTitleTask
+      // process
       const processDiv = document.querySelector(`[data-sortable="${process}"]`) as HTMLDivElement
       currentTitle.setAttribute('data-index', String(processDiv.childElementCount))
       currentTitle.setAttribute('data-origin-process', process)

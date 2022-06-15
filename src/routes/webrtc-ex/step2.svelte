@@ -1,37 +1,117 @@
 <script lang="ts">
   // webrtc 브라우저 환경에 따른 어댑터 모듈
   import 'https://webrtc.github.io/adapter/adapter-latest.js'
-  import { onMount } from 'svelte'
-  onMount(() => {
-    callBtn.disabled = true
-    hangupBtn.disabled = true
-  })
-  let getMediaOption = { video: false, audio: true }
-  // 비디오
+  // Dom binding ------------------------------------------------------------------------
+  let displayVideo: HTMLVideoElement
   let localVideo: HTMLVideoElement
   let remoteVideo: HTMLVideoElement
-  // 버튼
-  let startBtn: HTMLButtonElement
+  let displayBtn: HTMLButtonElement
+  let mediaBtn: HTMLButtonElement
   let callBtn: HTMLButtonElement
   let hangupBtn: HTMLButtonElement
-  // 스트림
+  // getStream --------------------------------------------------------------------------
+  let streamState: { [key: string]: boolean } = { display: false, cam: false, mic: false }
+  let mediaStreamConstraints = { video: false, audio: true }
+  let localDisplayStream: MediaStream
   let localStream: MediaStream
   let remoteStream: MediaStream
-  // 커넥션
+
+  // display, mic button action
+  function displayAction() {
+    navigator.mediaDevices
+      .getDisplayMedia({ video: true })
+      .then((mediaStream) => {
+        localMediaStreamMonitering('display', mediaStream)
+      })
+      .catch(handleLocalMediaStreamError)
+    // trace('Requesting local dispaly media stream.')
+  }
+  function mediaAction() {
+    navigator.mediaDevices
+      .getUserMedia(mediaStreamConstraints)
+      .then((mediaStream) => localMediaStreamMonitering('media', mediaStream))
+      .catch(handleLocalMediaStreamError)
+    // trace('Requesting local audio media stream.')
+  }
+
+  function localMediaStreamMonitering(option: 'display' | 'media', mediaStream?: MediaStream) {
+    if (!mediaStream) return new Error('미디어스트림이 없습니다.')
+    switch (option) {
+      case 'display':
+        localDisplayStream = mediaStream
+        displayVideo.srcObject = mediaStream
+        streamState.display = true
+        // trace('Received local stream.')
+        break
+      case 'media':
+        localStream = mediaStream
+        localVideo.srcObject = mediaStream
+        streamState.cam = mediaStreamConstraints.video
+        streamState.mic = mediaStreamConstraints.audio
+        // trace('Received local stream.')
+        break
+    }
+    // 비디오 또는 오디오 공유가 준비됐으므로 콜버튼 활성화
+    callBtn.disabled = false
+  }
+
+  // 커넥션 ------------------------------------------------------------------------------
   let localPeerConnection: RTCPeerConnection | null
   let remotePeerConnection: RTCPeerConnection | null
-
   const offerOptions: RTCOfferOptions = { offerToReceiveVideo: true }
+  // 퍼포먼스 측정용 -----------------------------------------------------------------------
   let startTime: number | null = null
 
-  function gotLocalMediaStream(mediaStream?: MediaStream) {
-    if (mediaStream) {
-      localStream = mediaStream
-      localVideo.srcObject = mediaStream
-      trace('Received local stream.')
-      callBtn.disabled = false
-    }
+  // Handles call button action: --------------------------------------------------------
+  function callAction() {
+    // 버튼 활성화
+    callBtn.disabled = true
+    hangupBtn.disabled = false
+    trace('Starting call.')
+    startTime = window.performance.now()
+
+    const trueStreamState = Object.keys(streamState).map((key) => {
+      if (streamState[key] === true) return key
+    })
+    console.log(localDisplayStream.getVideoTracks())
+    const videoTracks =
+      trueStreamState[0] === 'display'
+        ? localDisplayStream.getVideoTracks()
+        : localStream.getVideoTracks()
+    const audioTracks = localStream.getAudioTracks()
+    // if (videoTracks.length > 0) {
+    //   trace(`Using video device: ${videoTracks[0].label}.`)
+    // }
+    // if (audioTracks.length > 0) {
+    //   trace(`Using audio device: ${audioTracks[0].label}.`)
+    // }
+
+    const servers: RTCConfiguration | undefined = undefined // Allows for RTC server configuration.
+
+    // Create peer connections and add behavior.
+    localPeerConnection = new RTCPeerConnection(servers)
+    trace('Created local peer connection object localPeerConnection.')
+    localPeerConnection.addEventListener('icecandidate', handleConnection)
+    localPeerConnection.addEventListener('iceconnectionstatechange', handleConnectionChange)
+
+    remotePeerConnection = new RTCPeerConnection(servers)
+    trace('Created remote peer connection object remotePeerConnection.')
+
+    remotePeerConnection.addEventListener('icecandidate', handleConnection)
+    remotePeerConnection.addEventListener('iceconnectionstatechange', handleConnectionChange)
+    remotePeerConnection.addEventListener('addstream', gotRemoteMediaStream)
+
+    // Add local stream to connection and create offer to connect.
+    localPeerConnection.addStream(localStream)
+    trace('Added local stream to localPeerConnection.')
+
+    trace('localPeerConnection createOffer start.')
+    localPeerConnection
+      .createOffer(offerOptions)
+      .then(createdOffer)
+      .catch(setSessionDescriptionError)
   }
+
   function gotRemoteMediaStream(e) {
     // 무슨타입인지 모르겟다. 안나옴
     const mediaStream = e.stream as MediaStream
@@ -45,7 +125,6 @@
     console.log(now, text)
   }
   function handleLocalMediaStreamError(e: Error) {
-    gotLocalMediaStream()
     console.log('navigator.getUserMedia error: ', e)
   }
   // 비디오 이벤트 함수
@@ -170,61 +249,6 @@
       .catch(setSessionDescriptionError)
   }
 
-  // Handles start button action: creates local MediaStream.
-  function startAction() {
-    // startBtn.disabled = true
-    navigator.mediaDevices
-      .getUserMedia(getMediaOption)
-      .then(gotLocalMediaStream)
-      .catch(handleLocalMediaStreamError)
-    trace('Requesting local stream.')
-  }
-
-  // Handles call button action: creates peer connection.
-  function callAction() {
-    callBtn.disabled = true
-    hangupBtn.disabled = false
-    trace('Starting call.')
-    startTime = window.performance.now()
-
-    // Get local media stream tracks.
-    const videoTracks = localStream.getVideoTracks()
-    const audioTracks = localStream.getAudioTracks()
-    if (videoTracks.length > 0) {
-      trace(`Using video device: ${videoTracks[0].label}.`)
-    }
-    if (audioTracks.length > 0) {
-      trace(`Using audio device: ${audioTracks[0].label}.`)
-    }
-
-    const servers: RTCConfiguration | undefined = undefined // Allows for RTC server configuration.
-
-    // Create peer connections and add behavior.
-    localPeerConnection = new RTCPeerConnection(servers)
-    trace('Created local peer connection object localPeerConnection.')
-
-    localPeerConnection.addEventListener('icecandidate', handleConnection)
-    localPeerConnection.addEventListener('iceconnectionstatechange', handleConnectionChange)
-
-    remotePeerConnection = new RTCPeerConnection(servers)
-    trace('Created remote peer connection object remotePeerConnection.')
-
-    remotePeerConnection.addEventListener('icecandidate', handleConnection)
-    remotePeerConnection.addEventListener('iceconnectionstatechange', handleConnectionChange)
-    remotePeerConnection.addEventListener('addstream', gotRemoteMediaStream)
-
-    // Add local stream to connection and create offer to connect.
-    console.log(`\n\n\n\n\n\n\n ${localPeerConnection} \n\n\n\n\n\n`)
-    localPeerConnection.addStream(localStream)
-    trace('Added local stream to localPeerConnection.')
-
-    trace('localPeerConnection createOffer start.')
-    localPeerConnection
-      .createOffer(offerOptions)
-      .then(createdOffer)
-      .catch(setSessionDescriptionError)
-  }
-
   // Handles hangup action: ends up call, closes connections and resets peers.
   function hangupAction() {
     localPeerConnection!.close()
@@ -252,21 +276,37 @@
 </svelte:head>
 
 <div class="flex justify-center gap-2">
-  <button bind:this={startBtn} class="btn btn-sm btn-primary" on:click={startAction}>시작</button>
-  <button bind:this={callBtn} class="btn btn-sm btn-secondary" on:click={callAction}
-    >전화걸기</button
-  >
-  <button bind:this={hangupBtn} class="btn btn-sm btn-warning" on:click={hangupAction}
-    >전화끊기</button
-  >
+  <button bind:this={displayBtn} class="btn btn-sm btn-primary" on:click={displayAction}>
+    화면공유
+  </button>
+  <button bind:this={mediaBtn} class="btn btn-sm btn-primary" on:click={mediaAction}>
+    비디오공유
+  </button>
+  <button bind:this={callBtn} class="btn btn-sm btn-secondary" disabled on:click={callAction}>
+    전화걸기
+  </button>
+  <button bind:this={hangupBtn} class="btn btn-sm btn-warning" disabled on:click={hangupAction}>
+    전화끊기
+  </button>
 </div>
 <div class="flex justify-center gap-2 m-2">
+  <video
+    bind:this={displayVideo}
+    id="displayVideo"
+    autoplay
+    playsinline
+    width="320"
+    height="240"
+    controls
+    on:loadedmetadata={logVideoLoaded}
+  >
+    <track kind="captions" />
+  </video>
   <video
     bind:this={localVideo}
     id="localVideo"
     autoplay
     playsinline
-    loop
     width="320"
     height="240"
     controls
@@ -279,7 +319,6 @@
     id="remoteVideo"
     autoplay
     playsinline
-    loop
     width="320"
     height="240"
     controls
@@ -289,7 +328,8 @@
     <track kind="captions" />
   </video>
 </div>
-<div class="flex justify-center gap-2 m-2">
+<!-- 
+  <div class="flex justify-center gap-2 m-2">
   <textarea
     id="dataChannelSend"
     class="bg-amber-200"
@@ -297,4 +337,4 @@
     placeholder="Press Start, enter some text, then press Send."
   />
   <textarea id="dataChannelReceive" class="bg-teal-200" disabled />
-</div>
+</div> -->
