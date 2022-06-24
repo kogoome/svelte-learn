@@ -1,9 +1,8 @@
 import adapter from '@sveltejs/adapter-auto'
 import preprocess from 'svelte-preprocess'
 import path from 'path'
+// import { webSocketServer } from './publicChat.js'
 import { Server } from 'socket.io'
-
-let sockets = []
 
 export const webSocketServer = {
   name: 'webSocketServer',
@@ -11,21 +10,25 @@ export const webSocketServer = {
     const io = new Server(server.httpServer)
 
     io.on('connection', (socket) => {
-      sockets.push(socket)
-      console.log('1.', socket.id)
-      console.log('2. a user connected ✅ ')
-
-      socket.on('message', (msg) => {
-        sockets.forEach((aSocket) => {
-          aSocket.send(msg)
-        })
+      socket.onAny((event) => {
+        console.log('event:', event)
       })
-
-      socket.send('send from server message!!!')
-
-      socket.on('disconnect', () => {
-        sockets = []
-        console.log('4. user disconnected')
+      socket.on(
+        'enter_room',
+        /** @type {(roomName:string, done:(msg:string)=>void)=>void}  */
+        (roomName, done) => {
+          console.log('room name : ', roomName)
+          socket.join(roomName)
+          console.log(socket.rooms)
+          done('it works!')
+          // 메시지 브로드캐스팅은 자기자신을 제외한 사람에게 보냄.
+          socket.to(roomName).emit('welcome')
+        }
+      )
+      socket.on('disconnecting', () => {
+        socket.rooms.forEach((room) => {
+          socket.to(room).emit('bye')
+        })
       })
     })
   }
