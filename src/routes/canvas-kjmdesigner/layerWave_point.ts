@@ -14,7 +14,7 @@ export class Point {
     this.cur = (index + latency) * 10
     this.fixedY = y
     // 진폭
-    this.max = 80 - Math.abs((index - (totalPoints + 1) / 2) * 15)
+    this.max = 120 - Math.abs((index - (totalPoints + 1) / 2) * 20)
     this.frameCycle = (totalPoints + 1) * 10
   }
   update() {

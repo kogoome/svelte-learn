@@ -20,24 +20,27 @@ export class App {
     this.container = document.getElementById('container') as HTMLDivElement
     this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
     this.container.appendChild(this.canvas)
+    this.stageWidth = this.container.clientWidth
+    this.stageHeight = this.container.clientHeight
+    
+    // make draw Object
+    this.waveGroup = new WaveGroup(this.stageWidth, this.stageHeight, 7, 3, 0.4)
 
     // window 스크린 사이즈 가져와서 리사이즈 하기
     window.addEventListener('resize', this.resize.bind(this), false)
     this.resize()
 
-    // make draw Object
-    this.waveGroup = new WaveGroup(this.stageWidth, this.stageHeight, 7, 3, 0.4)
-    this.waveGroup.resize()
+    // this.waveGroup.resize()
 
     this.animate()
   }
 
   resize() {
-    this.stageWidth = this.container.clientWidth
-    this.stageHeight = this.container.clientHeight
     this.canvas.width = this.stageWidth * 2
     this.canvas.height = this.stageHeight * 2
     this.ctx.scale(2, 2)
+    
+    this.waveGroup.resize()
   }
   animate() {
     this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight)

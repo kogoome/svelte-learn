@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte'
-  import { App } from './boundingCircle_app'
+  import { onMount, onDestroy } from 'svelte'
+  import { App } from './layerWave_app'
   let app: App
   onMount(() => {
     app = new App()
@@ -18,8 +18,8 @@
 </script>
 
 <div class="flex flex-col justify-center p-10">
-  <div class="flex justify-center text-3xl p-2">Bounding Circle</div>
-  <div id="container" class="w-full h-96 bg-slate-800 rounded-sm" />
+  <div class="flex justify-center text-3xl p-2">layer wave</div>
+  <div id="container" class="w-full h-[80vh]  rounded-sm" />
   <div class="flex justify-center p-2 gap-2">
     <button class="btn btn-outline btn-sm" on:click={stopAnimation}>stop animation</button>
     <button class="btn btn-outline btn-sm" on:click={startAnimation}>start animation</button>

@@ -70,9 +70,9 @@ export class Wave {
     const randomBetween = (min: number, max: number) =>
       min + Math.floor(Math.random() * (max - min + 1))
 
-    const r = randomBetween(0, 255)
-    const g = randomBetween(0, 255)
-    const b = randomBetween(0, 255)
+    const r = randomBetween(80, 255)
+    const g = randomBetween(80, 255)
+    const b = randomBetween(80, 255)
     const rgba = `rgba(${r},${g},${b},${opacity})`
     return rgba
   }
