@@ -9,7 +9,7 @@ export class App {
   animationId = 0
   // wave: Wave
   waveGroup: WaveGroup
-  constructor() {
+  constructor(totalPoints: number, totalWaves: number, speed: number) {
     // canvas, ctx 생성
     this.canvas = document.createElement('canvas') as HTMLCanvasElement
     this.canvas.classList.add('bg-slate-50')
@@ -22,9 +22,15 @@ export class App {
     this.container.appendChild(this.canvas)
     this.stageWidth = this.container.clientWidth
     this.stageHeight = this.container.clientHeight
-    
+
     // make draw Object
-    this.waveGroup = new WaveGroup(this.stageWidth, this.stageHeight, 7, 3, 0.4)
+    this.waveGroup = new WaveGroup(
+      this.stageWidth,
+      this.stageHeight,
+      totalPoints,
+      totalWaves,
+      speed
+    )
 
     // window 스크린 사이즈 가져와서 리사이즈 하기
     window.addEventListener('resize', this.resize.bind(this), false)
@@ -39,7 +45,7 @@ export class App {
     this.canvas.width = this.stageWidth * 2
     this.canvas.height = this.stageHeight * 2
     this.ctx.scale(2, 2)
-    
+
     this.waveGroup.resize()
   }
   animate() {
