@@ -32,7 +32,8 @@
   }
 
   function handleMuteClick() {
-    mediaStreamConstraints.audio = muted ? true : false
+    myStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled))
+    // mediaStreamConstraints.audio = muted ? true : false
     muted = !muted
     getCam()
   }
