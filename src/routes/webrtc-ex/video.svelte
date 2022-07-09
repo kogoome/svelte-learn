@@ -6,7 +6,7 @@
   let myFace: HTMLVideoElement
   let myStream: MediaStream
 
-  let mediaStreamConstraints = { video: false, audio: true }
+  let mediaStreamConstraints = { video: true, audio: false }
   let displayStreamConstraints = { video: true }
   let muted = false
   let cameraOn = false
