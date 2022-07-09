@@ -76,7 +76,7 @@
 
 <style>
   .rootbg {
-    height: 300vh;
+    height: 400vh;
     background: linear-gradient(-60deg, #ff66d4, #ffa3a3, #fcffd6, #c5ffc2, #c2fff9, #80ecff);
     width: 100vw;
     background-size: 100% 100%;
