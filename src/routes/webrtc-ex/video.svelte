@@ -9,8 +9,8 @@
   let mediaStreamConstraints = { video: false, audio: true }
   let displayStreamConstraints = { video: true }
   let muted = false
-  let cameraOff = false
-  let displayoff = false
+  let cameraOn = false
+  let displayon = false
 
   async function getDisplay() {
     try {
@@ -36,6 +36,11 @@
     muted = !muted
     getCam()
   }
+  function handleCamClick() {
+    mediaStreamConstraints.video = cameraOn ? true : false
+    cameraOn = !cameraOn
+    getCam()
+  }
 </script>
 
 <svelte-head>
@@ -55,7 +60,7 @@
       <button class="btn btn-ghost w-16 h-16">
         <img src={microphoneIcon} alt="" />
       </button>
-      <button class="btn btn-ghost w-16 h-16" on:click={getCam}> cam </button>
+      <button class="btn btn-ghost w-16 h-16" on:click={handleCamClick}> cam </button>
       <button class="btn btn-ghost w-16 h-16" on:click={getDisplay}> display </button>
       <button class="btn btn-ghost w-16 h-16"> exit </button>
       <button class="btn btn-ghost w-16 h-16"> start </button>
